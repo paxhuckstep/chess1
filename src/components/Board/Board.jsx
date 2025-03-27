@@ -12,8 +12,8 @@ function Board() {
     "piece__rook-white",
     "piece__knight-white",
     "piece__bishop-white",
-    "piece__queen-white",
     "piece__king-white",
+    "piece__queen-white",
     "piece__bishop-white",
     "piece__knight-white",
     "piece__rook-white",
@@ -22,9 +22,9 @@ function Board() {
     "piece__rook-black",
     "piece__knight-black",
     "piece__bishop-black",
-    "piece__king-black",
     "piece__queen-black",
-    "piece__nishop-black",
+    "piece__king-black",
+    "piece__bishop-black",
     "piece__knight-black",
     "piece__rook-black",
   ];
@@ -50,9 +50,9 @@ function Board() {
     }
   });
   for (let i = 0; i < 8; i++) {
-    startingBoardData[i].piece = whiteBackRankStart[i];
+    startingBoardData[i].piece = blackBackRankStart[i];
     startingBoardData[i + 8].piece = "piece__pawn-black";
-    startingBoardData[63 - i].piece = blackBackRankStart[i];
+    startingBoardData[63 - i].piece = whiteBackRankStart[i];
     startingBoardData[55 - i].piece = "piece__pawn-white";
   }
   console.log(startingBoardData);
