@@ -1,64 +1,74 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import "./Board.css";
+import BoardBackground from "../BoardBackground/BoardBackground";
+import Pieces from "../Pieces/Pieces";
 
 function Board() {
+  const [boardData, setBoardData] = useState([]);
   const alphabet = "abcdefghijklmnopqrstuvwxyz";
   const alphabetArray = alphabet.split("");
   const whiteBackRankStart = [
-    "Rook",
-    "Knight",
-    "Bishop",
-    "Queen",
-    "King",
-    "Bishop",
-    "Knight",
-    "Rook",
+    "piece__rook-white",
+    "piece__knight-white",
+    "piece__bishop-white",
+    "piece__queen-white",
+    "piece__king-white",
+    "piece__bishop-white",
+    "piece__knight-white",
+    "piece__rook-white",
   ];
   const blackBackRankStart = [
-    "Rook",
-    "Knight",
-    "Bishop",
-    "King",
-    "Queen",
-    "Bishop",
-    "Knight",
-    "Rook",
+    "piece__rook-black",
+    "piece__knight-black",
+    "piece__bishop-black",
+    "piece__king-black",
+    "piece__queen-black",
+    "piece__nishop-black",
+    "piece__knight-black",
+    "piece__rook-black",
   ];
-  const [boardData, setBoardData] = useState([]);
- const startingBoardData = [...Array(64)].map(() => ({
+
+  const startingBoardData = [...Array(64)].map(() => ({
     xAxis: 0,
     yAxis: 0,
     squareName: "",
-    piece: null,
-    pieceColor: null,
+    piece: "",
     complexion: "light",
   }));
 
   for (let i = 0; i < 64; i++) {
-   startingBoardData[i].xAxis = (i % 8) + 1;
-   startingBoardData[i].yAxis = Math.floor(i / 8) + 1;
-   if(i % 2 === 0) {
-    startingBoardData[i].complexion = "dark"
-   }
+    startingBoardData[i].xAxis = (i % 8) + 1;
+    startingBoardData[i].yAxis = 8 - Math.floor(i / 8);
   }
- startingBoardData.forEach((square) => {
+  startingBoardData.forEach((square) => {
     const squareNameStart = alphabetArray[square.xAxis - 1];
     const squareNameEnd = square.yAxis.toString();
     square.squareName = squareNameStart + squareNameEnd;
+    if ((square.xAxis + square.yAxis) % 2 === 0) {
+      square.complexion = "dark";
+    }
   });
   for (let i = 0; i < 8; i++) {
-   startingBoardData[i].piece = whiteBackRankStart[i];
-   startingBoardData[i + 8].piece = "pawn";
-   startingBoardData[i].pieceColor = "white";
-   startingBoardData[i + 8].pieceColor = "white";
-   startingBoardData[63 - i].pieceColor = "black";
-   startingBoardData[55 - i].pieceColor = "black";
-   startingBoardData[63 - i].piece = blackBackRankStart[i];
+    startingBoardData[i].piece = whiteBackRankStart[i];
+    startingBoardData[i + 8].piece = "piece__pawn-black";
+    startingBoardData[63 - i].piece = blackBackRankStart[i];
+    startingBoardData[55 - i].piece = "piece__pawn-white";
   }
-
   console.log(startingBoardData);
-  return <></>;
+  useEffect(() => {
+    setBoardData(startingBoardData);
+    console.log(boardData);
+  }, []);
+
+  return (
+    <>
+      <div className="board">
+        <Pieces boardData={boardData} />
+        <BoardBackground boardData={boardData} />
+      </div>
+    </>
+  );
 }
 
 export default Board;

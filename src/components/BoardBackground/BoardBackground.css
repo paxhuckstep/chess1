@@ -1,0 +1,20 @@
+.board-background {
+  display: grid;
+  grid-template: repeat(8, 100px) / repeat(8, 100px);
+  height: 800px;
+  width: 800px;
+}
+.board-background__square {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  padding: 5px;
+  color: rgb(172, 175, 139);
+  font-size: 1.5rem;
+}
+.board-background__square_light {
+  background-color: rgb(245, 228, 182);
+}
+.board-background__square_dark {
+  background-color: rgb(80, 64, 19);
+}

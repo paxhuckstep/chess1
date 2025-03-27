@@ -1,0 +1,23 @@
+.pieces {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: grid;
+    grid-template: repeat(8, 100px) / repeat(8, 100px);
+    height: 800px;
+    width: 800px;
+    z-index: 999;
+  }
+  .piece {
+    /* background-color: transparent; */
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+  .piece__pawn-black {
+    background-image: url("../../assets/blackPawn.png");
+
+  }
+  .piece__pawn-white {
+    background-image: url("../../assets/whitePawn.png");
+  }
