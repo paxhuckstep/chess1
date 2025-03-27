@@ -6,6 +6,10 @@ import Pieces from "../Pieces/Pieces";
 
 function Board() {
   const [boardData, setBoardData] = useState([]);
+  const [selectedSquare, setSelectedSquare] = useState({
+    piece: "",
+    coordinates: [],
+  });
   const alphabet = "abcdefghijklmnopqrstuvwxyz";
   const alphabetArray = alphabet.split("");
   const whiteBackRankStart = [
@@ -55,11 +59,51 @@ function Board() {
     startingBoardData[63 - i].piece = whiteBackRankStart[i];
     startingBoardData[55 - i].piece = "piece__pawn-white";
   }
-  console.log(startingBoardData);
+  //   console.log(startingBoardData);
   useEffect(() => {
     setBoardData(startingBoardData);
-    console.log(boardData);
   }, []);
+  useEffect(() => {
+    console.log(selectedSquare);
+  }, [selectedSquare]);
+
+  useEffect(() => {
+    const handleMouseDown = (event) => {
+      console.log("MOUSE DOWN - target:", event.target);
+      const piece = event.target.className.slice(6);
+      const coordinates = [
+        alphabetArray.indexOf(event.target.id.charAt(0)) + 1,
+        Number(event.target.id.charAt(1)),
+      ];
+      if (piece.includes("piece_")) {
+        console.log("Starting piece:", piece);
+        console.log("Starting coords: ", coordinates);
+        // setSelectedSquare({piece: piece, coordinates: coordinates});
+        setSelectedSquare({ piece, coordinates });
+      }
+    };
+
+    const handleMouseUp = (event) => {
+      // console.log("MOUSE UP - target:", event.target);
+      // console.log("mouse UPP!!")
+      const targetSquare = event.target.closest(".piece");
+      // if (selectedSquare && targetSquare) {
+      //   console.log("Move from piece:", selectedSquare, "to:", targetSquare);
+      // Here you can implement your move logic
+      // }
+      setSelectedSquare(null);
+    };
+
+    // Add event listeners
+    window.addEventListener("mousedown", handleMouseDown);
+    window.addEventListener("mouseup", handleMouseUp);
+
+    // Cleanup function
+    return () => {
+      window.removeEventListener("mousedown", handleMouseDown);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+  }, [selectedSquare]); // Empty dependency array
 
   return (
     <>
