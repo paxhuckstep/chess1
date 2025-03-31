@@ -8,7 +8,7 @@ function BoardBackground({ boardData }) {
             square.complexion === "dark"
               ? "board-background__square_dark"
               : "board-background__square_light"
-          }`;
+          } ${square.isLegal ? "board-background__square_legal" : ""}`;
           if (square.squareName === "a1") {
             return (
               <div key={index} className={squareClassName}>

@@ -39,8 +39,9 @@ function Board() {
     squareName: "",
     piece: "",
     complexion: "light",
+    isLegal: false,
   }));
-
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////
   for (let i = 0; i < 64; i++) {
     startingBoardData[i].xAxis = (i % 8) + 1;
     startingBoardData[i].yAxis = 8 - Math.floor(i / 8);
@@ -60,12 +61,73 @@ function Board() {
     startingBoardData[55 - i].piece = "piece__pawn-white";
   }
   //   console.log(startingBoardData);
+  ////////////////////////////////////////////////////////////////////////////////////////////////
   useEffect(() => {
     setBoardData(startingBoardData);
   }, []);
+
   useEffect(() => {
-    console.log(selectedSquare);
+    // console.log(selectedSquare);
+    handleLegalMoves(selectedSquare);
   }, [selectedSquare]);
+
+  // const handleKingLegalMoves = (coordinates) => {
+  //   const xCoordinate = coordinates[0];
+  //   const yCoordinate = coordinates[1];
+  //   setBoardData((prev) => {
+  //     prev.forEach((square) => {
+  //       if (
+  //         (square.xAxis === xCoordinate + 1 ||
+  //           square.xAxis === xCoordinate ||
+  //           square.xAxis === xCoordinate - 1) &&
+  //         (square.yAxis === yCoordinate + 1 ||
+  //           square.yAxis === yCoordinate ||
+  //           square.yAxis === yCoordinate - 1)
+  //       ) {
+  //         square.isLegal = true;
+  //       }
+  //     });
+  //   });
+  //   console.log(boardData)
+  // };
+
+  const handleKingLegalMoves = (coordinates) => {
+    const xCoordinate = coordinates[0];
+    const yCoordinate = coordinates[1];
+
+    setBoardData((prevState) => {
+      // Create a copy of the previous state
+      const newState = [...prevState];
+
+      // Your existing forEach logic here to modify newState.squares
+      newState.forEach((square) => {
+        if (
+          (square.xAxis === xCoordinate + 1 ||
+            square.xAxis === xCoordinate ||
+            square.xAxis === xCoordinate - 1) &&
+          (square.yAxis === yCoordinate + 1 ||
+            square.yAxis === yCoordinate ||
+            square.yAxis === yCoordinate - 1) &&
+          !(square.xAxis === xCoordinate && square.yAxis === yCoordinate)
+        ) {
+          console.log("should be true: ", square.squareName);
+          square.isLegal = true;
+        } else {
+          square.isLegal = false;
+        }
+      });
+
+      console.log(newState); // For debugging
+      return newState; // This is the crucial line that was missing!
+    });
+  };
+
+  const handleLegalMoves = () => {
+    console.log(selectedSquare.piece.includes("king"));
+    if (selectedSquare.piece.includes("king")) {
+      handleKingLegalMoves(selectedSquare.coordinates);
+    }
+  };
 
   useEffect(() => {
     const handleMouseDown = (event) => {
@@ -76,32 +138,32 @@ function Board() {
         Number(event.target.id.charAt(1)),
       ];
       if (piece.includes("piece_")) {
-        console.log("Starting piece:", piece);
-        console.log("Starting coords: ", coordinates);
+        // console.log("Starting piece:", piece);
+        // console.log("Starting coords: ", coordinates);
         // setSelectedSquare({piece: piece, coordinates: coordinates});
         setSelectedSquare({ piece, coordinates });
       }
     };
 
-    const handleMouseUp = (event) => {
-      // console.log("MOUSE UP - target:", event.target);
-      // console.log("mouse UPP!!")
-      const targetSquare = event.target.closest(".piece");
-      // if (selectedSquare && targetSquare) {
-      //   console.log("Move from piece:", selectedSquare, "to:", targetSquare);
-      // Here you can implement your move logic
-      // }
-      setSelectedSquare(null);
-    };
+    // const handleMouseUp = (event) => {
+    //   // console.log("MOUSE UP - target:", event.target);
+    //   // console.log("mouse UPP!!")
+    //   const targetSquare = event.target.closest(".piece");
+    //   // if (selectedSquare && targetSquare) {
+    //   //   console.log("Move from piece:", selectedSquare, "to:", targetSquare);
+    //   // Here you can implement your move logic
+    //   // }
+    //   setSelectedSquare(null);
+    // };
 
     // Add event listeners
     window.addEventListener("mousedown", handleMouseDown);
-    window.addEventListener("mouseup", handleMouseUp);
+    // window.addEventListener("mouseup", handleMouseUp);
 
     // Cleanup function
     return () => {
       window.removeEventListener("mousedown", handleMouseDown);
-      window.removeEventListener("mouseup", handleMouseUp);
+      // window.removeEventListener("mouseup", handleMouseUp);
     };
   }, [selectedSquare]); // Empty dependency array
 
