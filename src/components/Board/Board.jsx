@@ -122,10 +122,96 @@ function Board() {
     });
   };
 
+  const handleLegalRookMoves = (coordinates) => {
+    const xCoordinate = coordinates[0];
+    const yCoordinate = coordinates[1];
+
+    setBoardData((prevState) => {
+      // Create a copy of the previous state
+      const newState = [...prevState];
+
+      // Your existing forEach logic here to modify newState.squares
+      newState.forEach((square) => {
+        if (
+          (square.xAxis === xCoordinate || square.yAxis === yCoordinate) &&
+          !(square.xAxis === xCoordinate && square.yAxis === yCoordinate)
+        ) {
+          console.log("should be true: ", square.squareName);
+          square.isLegal = true;
+        } else {
+          square.isLegal = false;
+        }
+      });
+
+      console.log(newState); // For debugging
+      return newState; // This is the crucial line that was missing!
+    });
+  };
+
+  const handleLegalBishopMoves = (coordinates) => {
+    const xCoordinate = coordinates[0];
+    const yCoordinate = coordinates[1];
+
+    setBoardData((prevState) => {
+      // Create a copy of the previous state
+      const newState = [...prevState];
+
+      // Your existing forEach logic here to modify newState.squares
+      newState.forEach((square) => {
+        square.isLegal = false;
+        for (let i = 1; i < 8; i++) {
+          for (let j = 0; j < 4; j++) {
+            if (j === 0) {
+              if (
+                square.xAxis === xCoordinate + i &&
+                square.yAxis === yCoordinate + i
+              ) {
+                square.isLegal = true;
+              }
+            }
+            if (j === 1) {
+              if (
+                square.xAxis === xCoordinate - i &&
+                square.yAxis === yCoordinate + i
+              ) {
+                square.isLegal = true;
+              }
+            }
+            if (j === 2) {
+              if (
+                square.xAxis === xCoordinate + i &&
+                square.yAxis === yCoordinate - i
+              ) {
+                square.isLegal = true;
+              }
+            }
+            if (j === 3) {
+              if (
+                square.xAxis === xCoordinate - i &&
+                square.yAxis === yCoordinate - i
+              ) {
+                square.isLegal = true;
+              }
+            }
+          }
+        }
+      });
+
+      console.log(newState); // For debugging
+      return newState; // This is the crucial line that was missing!
+    });
+  };
+
   const handleLegalMoves = () => {
     console.log(selectedSquare.piece.includes("king"));
     if (selectedSquare.piece.includes("king")) {
       handleKingLegalMoves(selectedSquare.coordinates);
+    }
+    if (selectedSquare.piece.includes("rook")) {
+      handleLegalRookMoves(selectedSquare.coordinates);
+    }
+    if (selectedSquare.piece.includes("bishop")) {
+      handleLegalBishopMoves(selectedSquare.coordinates);
     }
   };
 
