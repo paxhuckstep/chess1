@@ -31,6 +31,6 @@ export const startingBoardData = [...Array(64)].map(() => ({
   }
 
 
-  startingBoardData[36].piece =  "piece__bishop-white";
+  startingBoardData[36].piece =  "piece__queen-white";
   startingBoardData[33].piece = "piece__pawn-black";
   startingBoardData[38].piece = "piece__pawn-white";

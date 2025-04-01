@@ -392,6 +392,12 @@ function Board() {
     });
   };
 
+  const handleQueenObstacles = (coordinates, thisPieceColor) => {
+    handleRookObstacles(coordinates, thisPieceColor);
+    handleBishopObstacles(coordinates, thisPieceColor);
+
+  }
+
   const handleNoLegalMoves = () => {
     setBoardData((prevState) => {
       const newState = [...prevState];
@@ -433,6 +439,11 @@ function Board() {
     }
     if (selectedSquare.piece.includes("queen")) {
       handlePossibleLegalQueenMoves(selectedSquare.coordinates);
+      if (selectedSquare.piece.includes("white")) {
+        handleQueenObstacles(selectedSquare.coordinates, "white")
+      } else {
+        handleQueenObstacles(selectedSquare.coordinates, "black")
+      }
     }
     if (selectedSquare.piece.includes("knight")) {
       handlePossibleLegalKnightMoves(selectedSquare.coordinates);
