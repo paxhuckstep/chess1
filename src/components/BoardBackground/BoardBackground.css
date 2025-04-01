@@ -19,5 +19,8 @@
   background-color: rgb(80, 64, 19);
 }
 .board-background__square_legal {
+  background-color: lightgreen;
+}
+.board-background__square_maybe-legal {
   background-color: pink;
 }
