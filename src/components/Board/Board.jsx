@@ -259,35 +259,6 @@ function Board() {
     });
   };
 
-  const handleWhiteKingObstacles = () => {
-    setBoardData((prevState) => {
-      const newState = [...prevState];
-
-      newState.forEach((square) => {
-        if (square.isLegal && square.piece.includes("white")) {
-          square.isLegal = false;
-        }
-      });
-
-      return newState;
-    });
-  };
-
-  const handleBlackKingObstacles = () => {
-    setBoardData((prevState) => {
-      const newState = [...prevState];
-
-      newState.forEach((square) => {
-        if (square.isLegal && square.piece.includes("black")) {
-          square.isLegal = false;
-        }
-      });
-
-      return newState;
-    });
-  };
-
-
   const handleWhiteKnightObstacles = () => {
     setBoardData((prevState) => {
       const newState = [...prevState];
@@ -316,6 +287,124 @@ function Board() {
     });
   };
 
+  const handleWhiteKingObstacles = () => {
+    handleWhiteKnightObstacles();
+  };
+
+  const handleBlackKingObstacles = () => {
+    handleBlackKnightObstacles();
+  };
+
+  const handleWhiteRookObstacles = (coordinates) => {
+    const xCoordinate = coordinates[0];
+    const yCoordinate = coordinates[1];
+    setBoardData((prevState) => {
+      const newState = [...prevState];
+      const xRightBlocks = [];
+      const xLeftBlocks = [];
+      const yUpBlocks = [];
+      const yDownBlocks = [];
+
+      newState.forEach((square) => {
+        if (square.isLegal && square.piece.length > 0) {
+          // console.log(square);
+          if (square.xAxis === xCoordinate) {
+            if (square.yAxis > yCoordinate) {
+              yUpBlocks.push(square.yAxis);
+            }
+            if (square.yAxis < yCoordinate) {
+              yDownBlocks.push(square.yAxis);
+            }
+          }
+          if (square.yAxis === yCoordinate) {
+            if (square.xAxis > xCoordinate) {
+              xRightBlocks.push(square.xAxis);
+            }
+            if (square.xAxis < xCoordinate) {
+              xLeftBlocks.push(square.xAxis);
+            }
+          }
+        }
+      });
+
+      newState.forEach((sqaure) => {
+        if (
+          !(
+            (sqaure.xAxis === Math.max(...xLeftBlocks) ||
+              sqaure.xAxis === Math.min(...xRightBlocks) ||
+              sqaure.yAxis === Math.min(...yUpBlocks) ||
+              sqaure.yAxis === Math.max(...yDownBlocks)) &&
+            sqaure.piece.includes("black") &&
+            sqaure.isLegal
+          ) &&
+          (sqaure.xAxis <= Math.max(...xLeftBlocks) ||
+            sqaure.xAxis >= Math.min(...xRightBlocks) ||
+            sqaure.yAxis >= Math.min(...yUpBlocks) ||
+            sqaure.yAxis <= Math.max(...yDownBlocks))
+        ) {
+          sqaure.isLegal = false;
+        }
+      });
+
+      return newState;
+    });
+  };
+
+  const handleBlackRookObstacles = (coordinates) => {
+    const xCoordinate = coordinates[0];
+    const yCoordinate = coordinates[1];
+    setBoardData((prevState) => {
+      const newState = [...prevState];
+      const xRightBlocks = [];
+      const xLeftBlocks = [];
+      const yUpBlocks = [];
+      const yDownBlocks = [];
+
+      newState.forEach((square) => {
+        if (square.isLegal && square.piece.length > 0) {
+          // console.log(square);
+          if (square.xAxis === xCoordinate) {
+            if (square.yAxis > yCoordinate) {
+              yUpBlocks.push(square.yAxis);
+            }
+            if (square.yAxis < yCoordinate) {
+              yDownBlocks.push(square.yAxis);
+            }
+          }
+          if (square.yAxis === yCoordinate) {
+            if (square.xAxis > xCoordinate) {
+              xRightBlocks.push(square.xAxis);
+            }
+            if (square.xAxis < xCoordinate) {
+              xLeftBlocks.push(square.xAxis);
+            }
+          }
+        }
+      });
+
+      newState.forEach((sqaure) => {
+        if (
+          !(
+            (sqaure.xAxis === Math.max(...xLeftBlocks) ||
+              sqaure.xAxis === Math.min(...xRightBlocks) ||
+              sqaure.yAxis === Math.min(...yUpBlocks) ||
+              sqaure.yAxis === Math.max(...yDownBlocks)) &&
+            sqaure.piece.includes("white") &&
+            sqaure.isLegal
+          ) &&
+          (sqaure.xAxis <= Math.max(...xLeftBlocks) ||
+            sqaure.xAxis >= Math.min(...xRightBlocks) ||
+            sqaure.yAxis >= Math.min(...yUpBlocks) ||
+            sqaure.yAxis <= Math.max(...yDownBlocks))
+        ) {
+          sqaure.isLegal = false;
+        }
+      });
+
+      return newState;
+    });
+  };
+
   const handleNoLegalMoves = () => {
     setBoardData((prevState) => {
       const newState = [...prevState];
@@ -330,7 +419,7 @@ function Board() {
   };
 
   const handleLegalMoves = () => {
-    console.log(selectedSquare);
+    // console.log(selectedSquare);
     if (selectedSquare.piece.includes("king")) {
       handlePossibleLegalKingMoves(selectedSquare.coordinates);
       if (selectedSquare.piece.includes("white")) {
@@ -341,6 +430,11 @@ function Board() {
     }
     if (selectedSquare.piece.includes("rook")) {
       handlePossibleLegalRookMoves(selectedSquare.coordinates);
+      if (selectedSquare.piece.includes("white")) {
+        handleWhiteRookObstacles(selectedSquare.coordinates);
+      } else {
+        handleBlackRookObstacles(selectedSquare.coordinates);
+      }
     }
     if (selectedSquare.piece.includes("bishop")) {
       handlePossibleLegalBishopMoves(selectedSquare.coordinates);

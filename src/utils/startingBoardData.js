@@ -27,4 +27,10 @@ export const startingBoardData = [...Array(64)].map(() => ({
     startingBoardData[i + 8].piece = "piece__pawn-black";
     startingBoardData[63 - i].piece = whiteBackRankStart[i];
     startingBoardData[55 - i].piece = "piece__pawn-white";
+    // startingBoardData[55 - i].piece = "piece__pawn-black";
   }
+
+
+  // startingBoardData[36].piece =  "piece__rook-black";
+  // startingBoardData[33].piece = "piece__pawn-black";
+  // startingBoardData[38].piece = "piece__pawn-white";
