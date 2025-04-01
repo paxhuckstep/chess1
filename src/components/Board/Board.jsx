@@ -70,7 +70,7 @@ function Board() {
     handleLegalMoves();
   }, [selectedSquare]);
 
-  const handleKingLegalMoves = (coordinates) => {
+  const handlePossibleLegalKingMoves = (coordinates) => {
     const xCoordinate = coordinates[0];
     const yCoordinate = coordinates[1];
 
@@ -97,7 +97,7 @@ function Board() {
     });
   };
 
-  const handleLegalRookMoves = (coordinates) => {
+  const handlePossibleLegalRookMoves = (coordinates) => {
     const xCoordinate = coordinates[0];
     const yCoordinate = coordinates[1];
 
@@ -119,7 +119,7 @@ function Board() {
     });
   };
 
-  const handleLegalBishopMoves = (coordinates) => {
+  const handlePossibleLegalBishopMoves = (coordinates) => {
     const xCoordinate = coordinates[0];
     const yCoordinate = coordinates[1];
 
@@ -148,7 +148,7 @@ function Board() {
     });
   };
 
-  const handleLegalQueenMoves = (coordinates) => {
+  const handlePossibleLegalQueenMoves = (coordinates) => {
     const xCoordinate = coordinates[0];
     const yCoordinate = coordinates[1];
 
@@ -204,7 +204,7 @@ function Board() {
     });
   };
 
-  const handleLegalKnightMoves = (coordinates) => {
+  const handlePossibleLegalKnightMoves = (coordinates) => {
     const xCoordinate = coordinates[0];
     const yCoordinate = coordinates[1];
 
@@ -235,7 +235,7 @@ function Board() {
     });
   };
 
-  const handleLegalWhitePawnMoves = (coordinates) => {
+  const handlePossibleLegalWhitePawnMoves = (coordinates) => {
     const xCoordinate = coordinates[0];
     const yCoordinate = coordinates[1];
 
@@ -248,7 +248,10 @@ function Board() {
           (yCoordinate + 1 === square.yAxis && xCoordinate === square.xAxis) ||
           (yCoordinate === 2 &&
             yCoordinate + 2 === square.yAxis &&
-            xCoordinate === square.xAxis)
+            xCoordinate === square.xAxis) ||
+            (yCoordinate + 1 === square.yAxis &&
+              xCoordinate - 1 === square.xAxis) ||
+            (yCoordinate + 1 === square.yAxis && xCoordinate + 1 === square.xAxis)
         ) {
           square.isLegal = true;
         }
@@ -258,7 +261,7 @@ function Board() {
     });
   };
 
-  const handleLegalBlackPawnMoves = (coordinates) => {
+  const handlePossibleLegalBlackPawnMoves = (coordinates) => {
     const xCoordinate = coordinates[0];
     const yCoordinate = coordinates[1];
 
@@ -271,7 +274,10 @@ function Board() {
           (yCoordinate - 1 === square.yAxis && xCoordinate === square.xAxis) ||
           (yCoordinate === 7 &&
             yCoordinate - 2 === square.yAxis &&
-            xCoordinate === square.xAxis)
+            xCoordinate === square.xAxis) ||
+          (yCoordinate - 1 === square.yAxis &&
+            xCoordinate - 1 === square.xAxis) ||
+          (yCoordinate - 1 === square.yAxis && xCoordinate + 1 === square.xAxis)
         ) {
           square.isLegal = true;
         }
@@ -296,25 +302,25 @@ function Board() {
   const handleLegalMoves = () => {
     console.log(selectedSquare);
     if (selectedSquare.piece.includes("king")) {
-      handleKingLegalMoves(selectedSquare.coordinates);
+      handlePossibleLegalKingMoves(selectedSquare.coordinates);
     }
     if (selectedSquare.piece.includes("rook")) {
-      handleLegalRookMoves(selectedSquare.coordinates);
+      handlePossibleLegalRookMoves(selectedSquare.coordinates);
     }
     if (selectedSquare.piece.includes("bishop")) {
-      handleLegalBishopMoves(selectedSquare.coordinates);
+      handlePossibleLegalBishopMoves(selectedSquare.coordinates);
     }
     if (selectedSquare.piece.includes("queen")) {
-      handleLegalQueenMoves(selectedSquare.coordinates);
+      handlePossibleLegalQueenMoves(selectedSquare.coordinates);
     }
     if (selectedSquare.piece.includes("knight")) {
-      handleLegalKnightMoves(selectedSquare.coordinates);
+      handlePossibleLegalKnightMoves(selectedSquare.coordinates);
     }
     if (selectedSquare.piece.includes("pawn-white")) {
-      handleLegalWhitePawnMoves(selectedSquare.coordinates);
+      handlePossibleLegalWhitePawnMoves(selectedSquare.coordinates);
     }
     if (selectedSquare.piece.includes("pawn-black")) {
-      handleLegalBlackPawnMoves(selectedSquare.coordinates);
+      handlePossibleLegalBlackPawnMoves(selectedSquare.coordinates);
     }
     if (selectedSquare.piece === "piece ") {
       handleNoLegalMoves();
