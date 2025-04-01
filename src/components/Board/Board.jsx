@@ -320,10 +320,12 @@ function Board() {
             sqaure.piece.includes(otherColor) &&
             sqaure.isLegal
           ) &&
-          (sqaure.xAxis <= Math.max(...xLeftBlocks) ||
-            sqaure.xAxis >= Math.min(...xRightBlocks) ||
-            sqaure.yAxis >= Math.min(...yUpBlocks) ||
-            sqaure.yAxis <= Math.max(...yDownBlocks))
+          (
+            (sqaure.xAxis <= Math.max(...xLeftBlocks) && sqaure.yAxis === yCoordinate)  ||
+            (sqaure.xAxis >= Math.min(...xRightBlocks))  && sqaure.yAxis === yCoordinate ||
+            (sqaure.yAxis >= Math.min(...yUpBlocks))  && sqaure.xAxis === xCoordinate ||
+            (sqaure.yAxis <= Math.max(...yDownBlocks)  && sqaure.xAxis === xCoordinate)
+          )
         ) {
           sqaure.isLegal = false;
         }
@@ -395,8 +397,7 @@ function Board() {
   const handleQueenObstacles = (coordinates, thisPieceColor) => {
     handleRookObstacles(coordinates, thisPieceColor);
     handleBishopObstacles(coordinates, thisPieceColor);
-
-  }
+  };
 
   const handleNoLegalMoves = () => {
     setBoardData((prevState) => {
@@ -440,9 +441,9 @@ function Board() {
     if (selectedSquare.piece.includes("queen")) {
       handlePossibleLegalQueenMoves(selectedSquare.coordinates);
       if (selectedSquare.piece.includes("white")) {
-        handleQueenObstacles(selectedSquare.coordinates, "white")
+        handleQueenObstacles(selectedSquare.coordinates, "white");
       } else {
-        handleQueenObstacles(selectedSquare.coordinates, "black")
+        handleQueenObstacles(selectedSquare.coordinates, "black");
       }
     }
     if (selectedSquare.piece.includes("knight")) {
