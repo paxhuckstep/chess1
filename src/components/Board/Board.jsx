@@ -67,39 +67,16 @@ function Board() {
   }, []);
 
   useEffect(() => {
-    // console.log(selectedSquare);
-    handleLegalMoves(selectedSquare);
+    handleLegalMoves();
   }, [selectedSquare]);
-
-  // const handleKingLegalMoves = (coordinates) => {
-  //   const xCoordinate = coordinates[0];
-  //   const yCoordinate = coordinates[1];
-  //   setBoardData((prev) => {
-  //     prev.forEach((square) => {
-  //       if (
-  //         (square.xAxis === xCoordinate + 1 ||
-  //           square.xAxis === xCoordinate ||
-  //           square.xAxis === xCoordinate - 1) &&
-  //         (square.yAxis === yCoordinate + 1 ||
-  //           square.yAxis === yCoordinate ||
-  //           square.yAxis === yCoordinate - 1)
-  //       ) {
-  //         square.isLegal = true;
-  //       }
-  //     });
-  //   });
-  //   console.log(boardData)
-  // };
 
   const handleKingLegalMoves = (coordinates) => {
     const xCoordinate = coordinates[0];
     const yCoordinate = coordinates[1];
 
     setBoardData((prevState) => {
-      // Create a copy of the previous state
       const newState = [...prevState];
 
-      // Your existing forEach logic here to modify newState.squares
       newState.forEach((square) => {
         if (
           (square.xAxis === xCoordinate + 1 ||
@@ -110,15 +87,13 @@ function Board() {
             square.yAxis === yCoordinate - 1) &&
           !(square.xAxis === xCoordinate && square.yAxis === yCoordinate)
         ) {
-          console.log("should be true: ", square.squareName);
           square.isLegal = true;
         } else {
           square.isLegal = false;
         }
       });
 
-      console.log(newState); // For debugging
-      return newState; // This is the crucial line that was missing!
+      return newState;
     });
   };
 
@@ -127,24 +102,20 @@ function Board() {
     const yCoordinate = coordinates[1];
 
     setBoardData((prevState) => {
-      // Create a copy of the previous state
       const newState = [...prevState];
 
-      // Your existing forEach logic here to modify newState.squares
       newState.forEach((square) => {
         if (
           (square.xAxis === xCoordinate || square.yAxis === yCoordinate) &&
           !(square.xAxis === xCoordinate && square.yAxis === yCoordinate)
         ) {
-          console.log("should be true: ", square.squareName);
           square.isLegal = true;
         } else {
           square.isLegal = false;
         }
       });
 
-      console.log(newState); // For debugging
-      return newState; // This is the crucial line that was missing!
+      return newState;
     });
   };
 
@@ -153,52 +124,27 @@ function Board() {
     const yCoordinate = coordinates[1];
 
     setBoardData((prevState) => {
-      // Create a copy of the previous state
       const newState = [...prevState];
 
-      // Your existing forEach logic here to modify newState.squares
       newState.forEach((square) => {
         square.isLegal = false;
         for (let i = 1; i < 8; i++) {
-          for (let j = 0; j < 4; j++) {
-            if (j === 0) {
-              if (
-                square.xAxis === xCoordinate + i &&
-                square.yAxis === yCoordinate + i
-              ) {
-                square.isLegal = true;
-              }
-            }
-            if (j === 1) {
-              if (
-                square.xAxis === xCoordinate - i &&
-                square.yAxis === yCoordinate + i
-              ) {
-                square.isLegal = true;
-              }
-            }
-            if (j === 2) {
-              if (
-                square.xAxis === xCoordinate + i &&
-                square.yAxis === yCoordinate - i
-              ) {
-                square.isLegal = true;
-              }
-            }
-            if (j === 3) {
-              if (
-                square.xAxis === xCoordinate - i &&
-                square.yAxis === yCoordinate - i
-              ) {
-                square.isLegal = true;
-              }
-            }
+          if (
+            (square.xAxis === xCoordinate + i &&
+              square.yAxis === yCoordinate + i) ||
+            (square.xAxis === xCoordinate - i &&
+              square.yAxis === yCoordinate + i) ||
+            (square.xAxis === xCoordinate + i &&
+              square.yAxis === yCoordinate - i) ||
+            (square.xAxis === xCoordinate - i &&
+              square.yAxis === yCoordinate - i)
+          ) {
+            square.isLegal = true;
           }
         }
       });
 
-      console.log(newState); // For debugging
-      return newState; // This is the crucial line that was missing!
+      return newState;
     });
   };
 
@@ -207,10 +153,8 @@ function Board() {
     const yCoordinate = coordinates[1];
 
     setBoardData((prevState) => {
-      // Create a copy of the previous state
       const newState = [...prevState];
 
-      // Your existing forEach logic here to modify newState.squares
       newState.forEach((square) => {
         square.isLegal = false;
         for (let i = 1; i < 8; i++) {
@@ -253,13 +197,10 @@ function Board() {
           (square.xAxis === xCoordinate || square.yAxis === yCoordinate) &&
           !(square.xAxis === xCoordinate && square.yAxis === yCoordinate)
         ) {
-          // console.log("should be true: ", square.squareName);
           square.isLegal = true;
         }
       });
-
-      console.log(newState); // For debugging
-      return newState; // This is the crucial line that was missing!
+      return newState;
     });
   };
 
@@ -268,10 +209,8 @@ function Board() {
     const yCoordinate = coordinates[1];
 
     setBoardData((prevState) => {
-      // Create a copy of the previous state
       const newState = [...prevState];
 
-      // Your existing forEach logic here to modify newState.squares
       newState.forEach((square) => {
         square.isLegal = false;
         if (
@@ -292,13 +231,70 @@ function Board() {
         }
       });
 
-      console.log(newState); // For debugging
-      return newState; // This is the crucial line that was missing!
+      return newState;
+    });
+  };
+
+  const handleLegalWhitePawnMoves = (coordinates) => {
+    const xCoordinate = coordinates[0];
+    const yCoordinate = coordinates[1];
+
+    setBoardData((prevState) => {
+      const newState = [...prevState];
+
+      newState.forEach((square) => {
+        square.isLegal = false;
+        if (
+          (yCoordinate + 1 === square.yAxis && xCoordinate === square.xAxis) ||
+          (yCoordinate === 2 &&
+            yCoordinate + 2 === square.yAxis &&
+            xCoordinate === square.xAxis)
+        ) {
+          square.isLegal = true;
+        }
+      });
+
+      return newState;
+    });
+  };
+
+  const handleLegalBlackPawnMoves = (coordinates) => {
+    const xCoordinate = coordinates[0];
+    const yCoordinate = coordinates[1];
+
+    setBoardData((prevState) => {
+      const newState = [...prevState];
+
+      newState.forEach((square) => {
+        square.isLegal = false;
+        if (
+          (yCoordinate - 1 === square.yAxis && xCoordinate === square.xAxis) ||
+          (yCoordinate === 7 &&
+            yCoordinate - 2 === square.yAxis &&
+            xCoordinate === square.xAxis)
+        ) {
+          square.isLegal = true;
+        }
+      });
+
+      return newState;
+    });
+  };
+
+  const handleNoLegalMoves = () => {
+    setBoardData((prevState) => {
+      const newState = [...prevState];
+
+      newState.forEach((square) => {
+        square.isLegal = false;
+      });
+
+      return newState;
     });
   };
 
   const handleLegalMoves = () => {
-    console.log(selectedSquare.piece.includes("king"));
+    console.log(selectedSquare);
     if (selectedSquare.piece.includes("king")) {
       handleKingLegalMoves(selectedSquare.coordinates);
     }
@@ -314,22 +310,26 @@ function Board() {
     if (selectedSquare.piece.includes("knight")) {
       handleLegalKnightMoves(selectedSquare.coordinates);
     }
+    if (selectedSquare.piece.includes("pawn-white")) {
+      handleLegalWhitePawnMoves(selectedSquare.coordinates);
+    }
+    if (selectedSquare.piece.includes("pawn-black")) {
+      handleLegalBlackPawnMoves(selectedSquare.coordinates);
+    }
+    if (selectedSquare.piece === "piece ") {
+      handleNoLegalMoves();
+    }
   };
 
   useEffect(() => {
     const handleMouseDown = (event) => {
       console.log("MOUSE DOWN - target:", event.target);
-      const piece = event.target.className.slice(6);
+      const piece = event.target.className;
       const coordinates = [
         alphabetArray.indexOf(event.target.id.charAt(0)) + 1,
         Number(event.target.id.charAt(1)),
       ];
-      if (piece.includes("piece_")) {
-        // console.log("Starting piece:", piece);
-        // console.log("Starting coords: ", coordinates);
-        // setSelectedSquare({piece: piece, coordinates: coordinates});
-        setSelectedSquare({ piece, coordinates });
-      }
+      setSelectedSquare({ piece, coordinates });
     };
 
     // const handleMouseUp = (event) => {
@@ -343,16 +343,14 @@ function Board() {
     //   setSelectedSquare(null);
     // };
 
-    // Add event listeners
     window.addEventListener("mousedown", handleMouseDown);
     // window.addEventListener("mouseup", handleMouseUp);
 
-    // Cleanup function
     return () => {
       window.removeEventListener("mousedown", handleMouseDown);
       // window.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [selectedSquare]); // Empty dependency array
+  }, [selectedSquare]);
 
   return (
     <>
