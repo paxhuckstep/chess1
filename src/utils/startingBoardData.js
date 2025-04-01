@@ -34,6 +34,6 @@ for (let i = 0; i < 8; i++) {
   // startingBoardData[55 - i].piece = "piece__pawn-black";
 }
 
-startingBoardData[36].piece = "piece__queen-white";
+startingBoardData[36].piece = "piece__bishop-white";
 startingBoardData[33].piece = "piece__pawn-black";
 startingBoardData[38].piece = "piece__pawn-white";

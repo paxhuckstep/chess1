@@ -43,9 +43,6 @@ function Board() {
         ) {
           square.isLegal = true;
           square.isMaybeLegal = true;
-        } else {
-          square.isLegal = false;
-          square.isMaybeLegal = false;
         }
       });
 
@@ -67,9 +64,6 @@ function Board() {
         ) {
           square.isLegal = true;
           square.isMaybeLegal = true;
-        } else {
-          square.isLegal = false;
-          square.isMaybeLegal = false;
         }
       });
 
@@ -85,8 +79,6 @@ function Board() {
       const newState = [...prevState];
 
       newState.forEach((square) => {
-        square.isLegal = false;
-        square.isMaybeLegal = false;
         for (let i = 1; i < 8; i++) {
           if (
             (square.xAxis === xCoordinate + i &&
@@ -109,65 +101,8 @@ function Board() {
   };
 
   const handlePossibleLegalQueenMoves = (coordinates) => {
-    const xCoordinate = coordinates[0];
-    const yCoordinate = coordinates[1];
-
-    setBoardData((prevState) => {
-      const newState = [...prevState];
-
-      newState.forEach((square) => {
-        square.isLegal = false;
-        square.isMaybeLegal = false;
-        for (let i = 1; i < 8; i++) {
-          for (let j = 0; j < 4; j++) {
-            if (j === 0) {
-              if (
-                square.xAxis === xCoordinate + i &&
-                square.yAxis === yCoordinate + i
-              ) {
-                square.isLegal = true;
-                square.isMaybeLegal = true;
-              }
-            }
-            if (j === 1) {
-              if (
-                square.xAxis === xCoordinate - i &&
-                square.yAxis === yCoordinate + i
-              ) {
-                square.isLegal = true;
-                square.isMaybeLegal = true;
-              }
-            }
-            if (j === 2) {
-              if (
-                square.xAxis === xCoordinate + i &&
-                square.yAxis === yCoordinate - i
-              ) {
-                square.isLegal = true;
-                square.isMaybeLegal = true;
-              }
-            }
-            if (j === 3) {
-              if (
-                square.xAxis === xCoordinate - i &&
-                square.yAxis === yCoordinate - i
-              ) {
-                square.isLegal = true;
-                square.isMaybeLegal = true;
-              }
-            }
-          }
-        }
-        if (
-          (square.xAxis === xCoordinate || square.yAxis === yCoordinate) &&
-          !(square.xAxis === xCoordinate && square.yAxis === yCoordinate)
-        ) {
-          square.isLegal = true;
-          square.isMaybeLegal = true;
-        }
-      });
-      return newState;
-    });
+    handlePossibleLegalBishopMoves(coordinates);
+    handlePossibleLegalRookMoves(coordinates);
   };
 
   const handlePossibleLegalKnightMoves = (coordinates) => {
@@ -178,8 +113,6 @@ function Board() {
       const newState = [...prevState];
 
       newState.forEach((square) => {
-        square.isLegal = false;
-        square.isMaybeLegal = false;
         if (
           (square.xAxis === xCoordinate + 2 &&
             (square.yAxis === yCoordinate + 1 ||
@@ -211,8 +144,6 @@ function Board() {
       const newState = [...prevState];
 
       newState.forEach((square) => {
-        square.isLegal = false;
-        square.isMaybeLegal = false;
         if (
           (yCoordinate + 1 === square.yAxis && xCoordinate === square.xAxis) ||
           (yCoordinate === 2 &&
@@ -239,8 +170,6 @@ function Board() {
       const newState = [...prevState];
 
       newState.forEach((square) => {
-        square.isLegal = false;
-        square.isMaybeLegal = false;
         if (
           (yCoordinate - 1 === square.yAxis && xCoordinate === square.xAxis) ||
           (yCoordinate === 7 &&
@@ -320,12 +249,14 @@ function Board() {
             sqaure.piece.includes(otherColor) &&
             sqaure.isLegal
           ) &&
-          (
-            (sqaure.xAxis <= Math.max(...xLeftBlocks) && sqaure.yAxis === yCoordinate)  ||
-            (sqaure.xAxis >= Math.min(...xRightBlocks))  && sqaure.yAxis === yCoordinate ||
-            (sqaure.yAxis >= Math.min(...yUpBlocks))  && sqaure.xAxis === xCoordinate ||
-            (sqaure.yAxis <= Math.max(...yDownBlocks)  && sqaure.xAxis === xCoordinate)
-          )
+          ((sqaure.xAxis <= Math.max(...xLeftBlocks) &&
+            sqaure.yAxis === yCoordinate) ||
+            (sqaure.xAxis >= Math.min(...xRightBlocks) &&
+              sqaure.yAxis === yCoordinate) ||
+            (sqaure.yAxis >= Math.min(...yUpBlocks) &&
+              sqaure.xAxis === xCoordinate) ||
+            (sqaure.yAxis <= Math.max(...yDownBlocks) &&
+              sqaure.xAxis === xCoordinate))
         ) {
           sqaure.isLegal = false;
         }
@@ -414,6 +345,7 @@ function Board() {
 
   const handleLegalMoves = () => {
     // console.log(selectedSquare);
+    handleNoLegalMoves();
     if (selectedSquare.piece.includes("king")) {
       handlePossibleLegalKingMoves(selectedSquare.coordinates);
       if (selectedSquare.piece.includes("white")) {
@@ -460,9 +392,9 @@ function Board() {
     if (selectedSquare.piece.includes("pawn-black")) {
       handlePossibleLegalBlackPawnMoves(selectedSquare.coordinates);
     }
-    if (selectedSquare.piece === "piece ") {
-      handleNoLegalMoves();
-    }
+    // if (selectedSquare.piece === "piece ") {
+    //   handleNoLegalMoves();
+    // }
   };
 
   useEffect(() => {
