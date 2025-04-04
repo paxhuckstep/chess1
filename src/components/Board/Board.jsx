@@ -330,6 +330,92 @@ function Board() {
     handleBishopObstacles(coordinates, thisPieceColor);
   };
 
+  const handleWhitePawnObstacles = (coordinates) => {
+    const xCoordinate = coordinates[0];
+    const yCoordinate = coordinates[1];
+    setBoardData((prevState) => {
+      const newState = [...prevState];
+      const doubleJumpBlock = [];
+
+      newState.forEach((square) => {
+        if (
+          square.xAxis === xCoordinate &&
+          square.piece.length > 0 &&
+          square.yAxis === 3
+        ) {
+          doubleJumpBlock.push(square.xAxis);
+        }
+      });
+      // console.log(doubleJumpBlock);
+
+      newState.forEach((square) => {
+        if (
+          (!(
+            (square.xAxis === xCoordinate - 1 ||
+              square.xAxis === xCoordinate + 1) &&
+            square.yAxis === yCoordinate + 1 &&
+            square.piece.includes("black")
+          ) &&
+            square.xAxis !== xCoordinate) ||
+          ((square.yAxis === yCoordinate + 1 ||
+            square.yAxis === yCoordinate + 2) &&
+            square.xAxis === xCoordinate &&
+            square.piece.includes("piece__")) ||
+          (square.yAxis === 4 &&
+            doubleJumpBlock[0] === square.xAxis &&
+            yCoordinate === 2)
+        ) {
+          square.isLegal = false;
+        }
+      });
+
+      return newState;
+    });
+  };
+
+  const handleBlackPawnObstacles = (coordinates) => {
+    const xCoordinate = coordinates[0];
+    const yCoordinate = coordinates[1];
+    setBoardData((prevState) => {
+      const newState = [...prevState];
+      const doubleJumpBlock = [];
+
+      newState.forEach((square) => {
+        if (
+          square.xAxis === xCoordinate &&
+          square.piece.length > 0 &&
+          square.yAxis === 6
+        ) {
+          doubleJumpBlock.push(square.xAxis);
+        }
+      });
+      // console.log(doubleJumpBlock);
+
+      newState.forEach((square) => {
+        if (
+          (!(
+            (square.xAxis === xCoordinate - 1 ||
+              square.xAxis === xCoordinate + 1) &&
+            square.yAxis === yCoordinate - 1 &&
+            square.piece.includes("white")
+          ) &&
+            square.xAxis !== xCoordinate) ||
+          ((square.yAxis === yCoordinate - 1 ||
+            square.yAxis === yCoordinate - 2) &&
+            square.xAxis === xCoordinate &&
+            square.piece.includes("piece__")) ||
+          (square.yAxis === 5 &&
+            doubleJumpBlock[0] === square.xAxis &&
+            yCoordinate === 7)
+        ) {
+          square.isLegal = false;
+        }
+      });
+
+      return newState;
+    });
+  };
+
   const handleNoLegalMoves = () => {
     setBoardData((prevState) => {
       const newState = [...prevState];
@@ -388,13 +474,12 @@ function Board() {
     }
     if (selectedSquare.piece.includes("pawn-white")) {
       handlePossibleLegalWhitePawnMoves(selectedSquare.coordinates);
+      handleWhitePawnObstacles(selectedSquare.coordinates);
     }
     if (selectedSquare.piece.includes("pawn-black")) {
       handlePossibleLegalBlackPawnMoves(selectedSquare.coordinates);
+      handleBlackPawnObstacles(selectedSquare.coordinates);
     }
-    // if (selectedSquare.piece === "piece ") {
-    //   handleNoLegalMoves();
-    // }
   };
 
   useEffect(() => {
