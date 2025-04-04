@@ -413,18 +413,86 @@ function Board() {
   };
 
   const handleWhiteShortCastle = () => {
-    console.log("handlwWhiteKingShortCastle run");
-    //edits
     const f1 = boardData.find((square) => square.squareName === "f1");
     const g1 = boardData.find((square) => square.squareName === "g1");
-    console.log(f1.piece);
     if (!(f1.piece.includes("piece__") || g1.piece.includes("piece__"))) {
-      console.log("LEGAL CASTLE");
       setBoardData((prevState) => {
         const newState = [...prevState];
 
         newState.forEach((square) => {
           if (square.squareName === "g1") {
+            square.isLegal = true;
+          }
+        });
+
+        return newState;
+      });
+    }
+  };
+
+  const handleWhiteLongCastle = () => {
+    const d1 = boardData.find((square) => square.squareName === "d1");
+    const c1 = boardData.find((square) => square.squareName === "c1");
+    const b1 = boardData.find((square) => square.squareName === "b1");
+    console.log(f1.piece);
+    if (
+      !(
+        d1.piece.includes("piece__") ||
+        c1.piece.includes("piece__") ||
+        b1.piece.includes("piece__")
+      )
+    ) {
+      console.log("LEGAL CASTLE");
+      setBoardData((prevState) => {
+        const newState = [...prevState];
+
+        newState.forEach((square) => {
+          if (square.squareName === "c1") {
+            square.isLegal = true;
+          }
+        });
+
+        return newState;
+      });
+    }
+  };
+
+  const handleBlackShortCastle = () => {
+    const f8 = boardData.find((square) => square.squareName === "f8");
+    const g8 = boardData.find((square) => square.squareName === "g8");
+    if (!(f8.piece.includes("piece__") || g8.piece.includes("piece__"))) {
+      setBoardData((prevState) => {
+        const newState = [...prevState];
+
+        newState.forEach((square) => {
+          if (square.squareName === "g8") {
+            square.isLegal = true;
+          }
+        });
+
+        return newState;
+      });
+    }
+  };
+
+  const handleBlackLongCastle = () => {
+    const d8 = boardData.find((square) => square.squareName === "d8");
+    const c8 = boardData.find((square) => square.squareName === "c8");
+    const b8 = boardData.find((square) => square.squareName === "b8");
+    console.log(f1.piece);
+    if (
+      !(
+        d8.piece.includes("piece__") ||
+        c8.piece.includes("piece__") ||
+        b8.piece.includes("piece__")
+      )
+    ) {
+      console.log("LEGAL CASTLE");
+      setBoardData((prevState) => {
+        const newState = [...prevState];
+
+        newState.forEach((square) => {
+          if (square.squareName === "c8") {
             square.isLegal = true;
           }
         });
@@ -457,8 +525,17 @@ function Board() {
         if (!(hasWhiteKingMoved || hasRookH1Moved)) {
           handleWhiteShortCastle();
         }
+        if (!(hasWhiteKingMoved || hasRookA1Moved)) {
+          handleWhiteLongCastle();
+        }
       } else {
         handleKingObstacles("black");
+        if (!(hasBlackKingMoved || hasRookH8Moved)) {
+          handleBlackShortCastle();
+        }
+        if (!(hasBlackKingMoved || hasRookA8Moved)) {
+          handleBlackLongCastle();
+        }
       }
     }
     if (selectedSquare.piece.includes("rook")) {
@@ -508,8 +585,20 @@ function Board() {
     if (piece.includes("king-white")) {
       setHasWhiteKingMoved(true);
     }
+    if (piece.includes("king-black")) {
+      setHasBlackKingMoved(true);
+    }
     if (oldSquareCoordinates[0] === 8 && oldSquareCoordinates[1] === 1) {
       setHasRookH1Moved(true);
+    }
+    if (oldSquareCoordinates[0] === 1 && oldSquareCoordinates[1] === 1) {
+      setHasRookA1Moved(true);
+    }
+    if (oldSquareCoordinates[0] === 8 && oldSquareCoordinates[1] === 8) {
+      setHasRookH8Moved(true);
+    }
+    if (oldSquareCoordinates[0] === 1 && oldSquareCoordinates[1] === 8) {
+      setHasRookA8Moved(true);
     }
 
     if (piece.includes("king-white") && newSquareName === "g1") {
@@ -517,15 +606,6 @@ function Board() {
         const newState = [...prevState];
 
         newState.forEach((square) => {
-          if (square.squareName === newSquareName) {
-            square.piece = piece.slice(6);
-          }
-          if (
-            square.xAxis === oldSquareCoordinates[0] &&
-            square.yAxis === oldSquareCoordinates[1]
-          ) {
-            square.piece = "";
-          }
           if (square.squareName === "f1") {
             square.piece = "piece__rook-white";
           }
@@ -536,18 +616,17 @@ function Board() {
 
         return newState;
       });
-    } else {
+    }
+
+    if (piece.includes("king-white") && newSquareName === "c1") {
       setBoardData((prevState) => {
         const newState = [...prevState];
 
         newState.forEach((square) => {
-          if (square.squareName === newSquareName) {
-            square.piece = piece.slice(6);
+          if (square.squareName === "d1") {
+            square.piece = "piece__rook-white";
           }
-          if (
-            square.xAxis === oldSquareCoordinates[0] &&
-            square.yAxis === oldSquareCoordinates[1]
-          ) {
+          if (square.squareName === "a1") {
             square.piece = "";
           }
         });
@@ -555,6 +634,59 @@ function Board() {
         return newState;
       });
     }
+
+    if (piece.includes("king-black") && newSquareName === "g8") {
+      setBoardData((prevState) => {
+        const newState = [...prevState];
+
+        newState.forEach((square) => {
+          if (square.squareName === "f8") {
+            square.piece = "piece__rook-black";
+          }
+          if (square.squareName === "h8") {
+            square.piece = "";
+          }
+        });
+
+        return newState;
+      });
+    }
+
+    if (piece.includes("king-black") && newSquareName === "c8") {
+      setBoardData((prevState) => {
+        const newState = [...prevState];
+
+        newState.forEach((square) => {
+          if (square.squareName === "d8") {
+            square.piece = "piece__rook-black";
+          }
+          if (square.squareName === "a8") {
+            square.piece = "";
+          }
+        });
+
+        return newState;
+      });
+    }
+
+    setBoardData((prevState) => {
+      const newState = [...prevState];
+
+      newState.forEach((square) => {
+        if (square.squareName === newSquareName) {
+          square.piece = piece.slice(6);
+        }
+        if (
+          square.xAxis === oldSquareCoordinates[0] &&
+          square.yAxis === oldSquareCoordinates[1]
+        ) {
+          square.piece = "";
+        }
+      });
+
+      return newState;
+    });
+
     setSelectedSquare({
       piece: "",
       coordinates: [],
