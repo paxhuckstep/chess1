@@ -12,13 +12,6 @@ function Board() {
     piece: "",
     coordinates: [],
   });
-  useEffect(() => {
-    resetBoard();
-  }, []);
-
-  useEffect(() => {
-    handleLegalMoves();
-  }, [selectedSquare]);
 
   const resetBoard = () => {
     setBoardData(startingBoardData);
@@ -218,7 +211,7 @@ function Board() {
       const yDownBlocks = [];
 
       newState.forEach((square) => {
-        if (square.isLegal && square.piece.length > 0) {
+        if (square.isLegal && square.piece.includes("piece__")) {
           // console.log(square);
           if (square.xAxis === xCoordinate) {
             if (square.yAxis > yCoordinate) {
@@ -278,7 +271,7 @@ function Board() {
       const downRightBlocks = [];
 
       newState.forEach((square) => {
-        if (square.isLegal && square.piece.length > 0) {
+        if (square.isLegal && square.piece.includes("piece__")) {
           if (square.xAxis < xCoordinate && square.yAxis > yCoordinate) {
             upLeftBlocks.push(square.xAxis);
           }
@@ -482,26 +475,55 @@ function Board() {
     }
   };
 
-  useEffect(() => {
-    const handleMouseDown = (event) => {
-      // console.log("MOUSE DOWN - target:", event.target);
-      const piece = event.target.className;
-      const coordinates = [
-        alphabetArray.indexOf(event.target.id.charAt(0)) + 1,
-        Number(event.target.id.charAt(1)),
-      ];
-      setSelectedSquare({ piece, coordinates });
-    };
+  const movePiece = (piece, newSquareName, oldSquareCoordinates) => {
+    console.log("movePiece run");
+    setBoardData((prevState) => {
+      const newState = [...prevState];
 
+      newState.forEach((square) => {
+        if (square.squareName === newSquareName) {
+          square.piece = piece;
+        }
+        if (square.xAxis === oldSquareCoordinates[0] && square.yAxis === oldSquareCoordinates[1]) {
+          square.piece = "piece";
+        }
+      });
+
+      return newState;
+    });
+    setSelectedSquare({
+      piece: "",
+      coordinates: [],
+    });
+  };
+
+  const handleMouseDown = (event) => {
+    console.log("MOUSE DOWN - target id:", event.target.id);
+    const piece = event.target.className;
+    const coordinates = [
+      alphabetArray.indexOf(event.target.id.charAt(0)) + 1,
+      Number(event.target.id.charAt(1)),
+    ];
+    const squareData = boardData.find(
+      (square) => square.squareName === event.target.id.toString()
+    );
+    console.log("Looking for square:", event.target.id.toString());
+    console.log(
+      "All square names:",
+      boardData.map((square) => square.squareName)
+    );
+    // console.log(boardData.find(square => square.squareName === event.target.id.toString()));
+    console.log(squareData);
+    if (squareData?.isLegal) {
+      // console.log("move", selectedSquare.piece, "to ", squareData.squareName);
+      movePiece(selectedSquare.piece, squareData.squareName, selectedSquare.coordinates);
+    } else {
+      setSelectedSquare({ piece, coordinates });
+    }
+  };
+
+  useEffect(() => {
     // const handleMouseUp = (event) => {
-    //   // console.log("MOUSE UP - target:", event.target);
-    //   // console.log("mouse UPP!!")
-    //   const targetSquare = event.target.closest(".piece");
-    //   // if (selectedSquare && targetSquare) {
-    //   //   console.log("Move from piece:", selectedSquare, "to:", targetSquare);
-    //   // Here you can implement your move logic
-    //   // }
-    //   setSelectedSquare(null);
     // };
 
     window.addEventListener("mousedown", handleMouseDown);
@@ -511,6 +533,19 @@ function Board() {
       window.removeEventListener("mousedown", handleMouseDown);
       // window.removeEventListener("mouseup", handleMouseUp);
     };
+  }, [selectedSquare]);
+
+  useEffect(() => {
+    resetBoard();
+  }, []);
+
+  useEffect(() => {
+    // console.log()
+    //if square isLegal is true
+    //move piece
+    //else
+    //handleLegalMoves
+    handleLegalMoves();
   }, [selectedSquare]);
 
   return (

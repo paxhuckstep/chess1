@@ -34,14 +34,14 @@ for (let i = 0; i < 8; i++) {
   // startingBoardData[55 - i].piece = "piece__pawn-black";
 }
 
-startingBoardData[36].piece = "piece__queen-white";
-startingBoardData[42].piece = "piece__pawn-black";
-startingBoardData[38].piece = "piece__pawn-white";
-startingBoardData[41].piece = "piece__pawn-black";
-startingBoardData[43].piece = "piece__pawn-white";
+// startingBoardData[36].piece = "piece__queen-black";
+// startingBoardData[42].piece = "piece__knight-black";
+// startingBoardData[38].piece = "piece__bishop-white";
+// startingBoardData[41].piece = "piece__rook-black";
+// startingBoardData[43].piece = "piece__pawn-white";
 
-startingBoardData[18].piece = "piece__queen-white";
-startingBoardData[20].piece = "piece__pawn-black";
-startingBoardData[21].piece = "piece__pawn-white";
-startingBoardData[25].piece = "piece__pawn-black";
-startingBoardData[43].piece = "piece__pawn-white";
+// startingBoardData[18].piece = "piece__queen-white";
+// startingBoardData[20].piece = "piece__pawn-black";
+// startingBoardData[21].piece = "piece__pawn-white";
+// startingBoardData[25].piece = "piece__pawn-black";
+// startingBoardData[43].piece = "piece__pawn-white";
