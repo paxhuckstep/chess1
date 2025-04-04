@@ -326,17 +326,18 @@ function Board() {
   const handleWhitePawnObstacles = (coordinates) => {
     const xCoordinate = coordinates[0];
     const yCoordinate = coordinates[1];
+    let doubleJumpBlock = false;
+
     setBoardData((prevState) => {
       const newState = [...prevState];
-      const doubleJumpBlock = [];
 
       newState.forEach((square) => {
         if (
           square.xAxis === xCoordinate &&
-          square.piece.length > 0 &&
+          square.piece.includes("piece__") &&
           square.yAxis === 3
         ) {
-          doubleJumpBlock.push(square.xAxis);
+          doubleJumpBlock = true;
         }
       });
       // console.log(doubleJumpBlock);
@@ -354,9 +355,7 @@ function Board() {
             square.yAxis === yCoordinate + 2) &&
             square.xAxis === xCoordinate &&
             square.piece.includes("piece__")) ||
-          (square.yAxis === 4 &&
-            doubleJumpBlock[0] === square.xAxis &&
-            yCoordinate === 2)
+          (square.yAxis === 4 && doubleJumpBlock && yCoordinate === 2)
         ) {
           square.isLegal = false;
         }
@@ -369,17 +368,18 @@ function Board() {
   const handleBlackPawnObstacles = (coordinates) => {
     const xCoordinate = coordinates[0];
     const yCoordinate = coordinates[1];
+    let doubleJumpBlock = false;
+
     setBoardData((prevState) => {
       const newState = [...prevState];
-      const doubleJumpBlock = [];
 
       newState.forEach((square) => {
         if (
           square.xAxis === xCoordinate &&
-          square.piece.length > 0 &&
+          square.piece.includes("piece__") &&
           square.yAxis === 6
         ) {
-          doubleJumpBlock.push(square.xAxis);
+          doubleJumpBlock = true;
         }
       });
       // console.log(doubleJumpBlock);
@@ -397,9 +397,7 @@ function Board() {
             square.yAxis === yCoordinate - 2) &&
             square.xAxis === xCoordinate &&
             square.piece.includes("piece__")) ||
-          (square.yAxis === 5 &&
-            doubleJumpBlock[0] === square.xAxis &&
-            yCoordinate === 7)
+          (square.yAxis === 5 && doubleJumpBlock && yCoordinate === 7)
         ) {
           square.isLegal = false;
         }
@@ -476,7 +474,6 @@ function Board() {
   };
 
   const movePiece = (piece, newSquareName, oldSquareCoordinates) => {
-    console.log("movePiece run");
     setBoardData((prevState) => {
       const newState = [...prevState];
 
@@ -484,8 +481,11 @@ function Board() {
         if (square.squareName === newSquareName) {
           square.piece = piece;
         }
-        if (square.xAxis === oldSquareCoordinates[0] && square.yAxis === oldSquareCoordinates[1]) {
-          square.piece = "piece";
+        if (
+          square.xAxis === oldSquareCoordinates[0] &&
+          square.yAxis === oldSquareCoordinates[1]
+        ) {
+          square.piece = "";
         }
       });
 
@@ -498,7 +498,7 @@ function Board() {
   };
 
   const handleMouseDown = (event) => {
-    console.log("MOUSE DOWN - target id:", event.target.id);
+    // console.log("MOUSE DOWN - target id:", event.target);
     const piece = event.target.className;
     const coordinates = [
       alphabetArray.indexOf(event.target.id.charAt(0)) + 1,
@@ -507,16 +507,20 @@ function Board() {
     const squareData = boardData.find(
       (square) => square.squareName === event.target.id.toString()
     );
-    console.log("Looking for square:", event.target.id.toString());
-    console.log(
-      "All square names:",
-      boardData.map((square) => square.squareName)
-    );
+    // console.log("Looking for square:", event.target.id.toString());
+    // console.log(
+    //   "All square names:",
+    //   boardData.map((square) => square.squareName)
+    // );
     // console.log(boardData.find(square => square.squareName === event.target.id.toString()));
     console.log(squareData);
     if (squareData?.isLegal) {
       // console.log("move", selectedSquare.piece, "to ", squareData.squareName);
-      movePiece(selectedSquare.piece, squareData.squareName, selectedSquare.coordinates);
+      movePiece(
+        selectedSquare.piece,
+        squareData.squareName,
+        selectedSquare.coordinates
+      );
     } else {
       setSelectedSquare({ piece, coordinates });
     }
