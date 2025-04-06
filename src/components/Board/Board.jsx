@@ -139,6 +139,112 @@ function Board() {
     });
   };
 
+  //edits
+  const handleIsPinnedToKing = (coordinates, thisPieceColor) => {
+    const xCoordinate = coordinates[0];
+    const yCoordinate = coordinates[1];
+    const otherColor = thisPieceColor === "white" ? "black" : "white";
+
+    // Arrays to store blocking pieces for straight lines (rook/queen)
+    const xRightBlocks = [];
+    const xLeftBlocks = [];
+    const yUpBlocks = [];
+    const yDownBlocks = [];
+
+    // Arrays to store blocking pieces for diagonals (bishop/queen)
+    const upRightBlocks = [];
+    const upLeftBlocks = [];
+    const downRightBlocks = [];
+    const downLeftBlocks = [];
+
+    // Collect blocking pieces
+    boardData.forEach((square) => {
+      if (square.piece.includes("piece__")) {
+        // Straight lines
+        if (square.xAxis === xCoordinate) {
+          if (square.yAxis > yCoordinate) yUpBlocks.push(square.yAxis);
+          if (square.yAxis < yCoordinate) yDownBlocks.push(square.yAxis);
+        }
+        if (square.yAxis === yCoordinate) {
+          if (square.xAxis > xCoordinate) xRightBlocks.push(square.xAxis);
+          if (square.xAxis < xCoordinate) xLeftBlocks.push(square.xAxis);
+        }
+
+        // Diagonals
+        const xDiff = square.xAxis - xCoordinate;
+        const yDiff = square.yAxis - yCoordinate;
+        if (Math.abs(xDiff) === Math.abs(yDiff)) {
+          if (xDiff > 0 && yDiff > 0) upRightBlocks.push(square.xAxis);
+          if (xDiff < 0 && yDiff > 0) upLeftBlocks.push(square.xAxis);
+          if (xDiff > 0 && yDiff < 0) downRightBlocks.push(square.xAxis);
+          if (xDiff < 0 && yDiff < 0) downLeftBlocks.push(square.xAxis);
+        }
+      }
+    });
+
+
+
+    const isVerticalPinned =
+      boardData.some(
+        (square) =>
+          (square.piece.includes("rook") ||
+            (square.piece.includes("queen") &&
+              square.piece.includes(otherColor))) &&
+          ((square.yAxis === Math.min(...yUpBlocks) &&
+            square.xAxis === xCoordinate) ||
+            (square.yAxis === Math.max(...yDownBlocks) &&
+              square.xAxis === xCoordinate))
+      ) &&
+      boardData.some(
+        (square) =>
+          square.piece.includes("king") &&
+          square.piece.includes(thisPieceColor) &&
+          ((square.yAxis === Math.min(...yUpBlocks) &&
+            square.xAxis === xCoordinate) ||
+            (square.yAxis === Math.max(...yDownBlocks) &&
+              square.xAxis === xCoordinate))
+      );
+
+    const isHorizontalPinned =
+      boardData.some(
+        (square) =>
+          (square.piece.includes("rook") ||
+            (square.piece.includes("queen") &&
+              square.piece.includes(otherColor))) &&
+          ((square.xAxis === Math.max(...xLeftBlocks) &&
+            square.yAxis === yCoordinate) ||
+            (square.xAxis === Math.min(...xRightBlocks) &&
+              square.yAxis === yCoordinate))
+      ) &&
+      //
+      boardData.some(
+        (square) =>
+          (square.piece.includes("king") &&
+            square.piece.includes(thisPieceColor)) &&
+          ((square.xAxis === Math.max(...xLeftBlocks) &&
+            square.yAxis === yCoordinate) ||
+            (square.xAxis === Math.min(...xRightBlocks) &&
+              square.yAxis === yCoordinate))
+      );
+
+    console.log("Vertical Pin: ", isVerticalPinned);
+    console.log("Horizontal Pin: ", isHorizontalPinned);
+
+        setBoardData((prevState) => {
+      const newState = [...prevState];
+
+      newState.forEach((square) => {
+        if ((isVerticalPinned && square.xAxis !== xCoordinate)
+        || (isHorizontalPinned && square.yAxis !== yCoordinate)
+        ) {
+          square.isLegal = false;
+        }
+      });
+
+      return newState;
+    });
+  };
+
   const handlePossibleLegalKingMoves = (coordinates) => {
     const xCoordinate = coordinates[0];
     const yCoordinate = coordinates[1];
@@ -319,7 +425,7 @@ function Board() {
 
   const handleKingObstacles = (thisPieceColor) => {
     handleKnightObstacles(thisPieceColor);
-    
+
     const otherColor = thisPieceColor === "white" ? "black" : "white";
     setBoardData((prevState) => {
       const newState = [...prevState];
@@ -727,6 +833,11 @@ function Board() {
     if (selectedSquare.piece.includes("pawn-black")) {
       handlePossibleLegalBlackPawnMoves(selectedSquare.coordinates);
       handleBlackPawnObstacles(selectedSquare.coordinates);
+    }
+    if (selectedSquare.piece.includes("white")) {
+      handleIsPinnedToKing(selectedSquare.coordinates, "white");
+    } else {
+      handleIsPinnedToKing(selectedSquare.coordinates, "black");
     }
   };
 
