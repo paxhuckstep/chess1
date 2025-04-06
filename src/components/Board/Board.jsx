@@ -206,9 +206,8 @@ function Board() {
     const isHorizontalPinned =
       boardData.some(
         (square) =>
-          (square.piece.includes("rook") ||
-            (square.piece.includes("queen") &&
-              square.piece.includes(otherColor))) &&
+          (square.piece.includes("rook") || square.piece.includes("queen")) &&
+          square.piece.includes(otherColor) &&
           ((square.xAxis === Math.max(...xLeftBlocks) &&
             square.yAxis === yCoordinate) ||
             (square.xAxis === Math.min(...xRightBlocks) &&
@@ -254,21 +253,47 @@ function Board() {
         );
       });
 
+    const isUpLeftDiagonalPinned =
+      boardData.some((square) => {
+        const xDiff = square.xAxis - xCoordinate;
+        const yDiff = square.yAxis - yCoordinate;
+        return (
+          Math.abs(xDiff) === Math.abs(yDiff) &&
+          (square.piece.includes("bishop") ||
+            (square.piece.includes("queen") &&
+              square.piece.includes(otherColor))) &&
+          ((square.xAxis === Math.max(...upLeftBlocks) &&
+            square.yAxis > yCoordinate) ||
+            (square.xAxis === Math.min(...downRightBlocks) &&
+              square.yAxis < yCoordinate))
+        );
+      }) &&
+      boardData.some((square) => {
+        const xDiff = square.xAxis - xCoordinate;
+        const yDiff = square.yAxis - yCoordinate;
+        return (
+          Math.abs(xDiff) === Math.abs(yDiff) &&
+          square.piece.includes("king") &&
+          square.piece.includes(thisPieceColor) &&
+          ((square.xAxis === Math.max(...upLeftBlocks) &&
+            square.yAxis > yCoordinate) ||
+            (square.xAxis === Math.min(...downRightBlocks) &&
+              square.yAxis < yCoordinate))
+        );
+      });
+
     // const isUpLeftDiagonalPinned =
     // Math.abs(xDiff) === Math.abs(yDiff) &&
     // (square.piece.includes("bishop") || square.piece.includes("queen")) &&
     // ((square.xAxis === Math.max(...upLeftBlocks) &&
     //   square.yAxis > yCoordinate) ||
-    //   (square.xAxis === Math.min(...upRightBlocks) &&
-    //     square.yAxis > yCoordinate) ||
-    //   (square.xAxis === Math.max(...downLeftBlocks) &&
-    //     square.yAxis < yCoordinate) ||
     //   (square.xAxis === Math.min(...downRightBlocks) &&
     //     square.yAxis < yCoordinate));
 
     console.log("Vertical Pin: ", isVerticalPinned);
     console.log("Horizontal Pin: ", isHorizontalPinned);
     console.log("upRightDiagonal pin ", isUpRightDiagonalPinned);
+    console.log("up Left diagonal pin: ", isUpLeftDiagonalPinned);
 
     setBoardData((prevState) => {
       const newState = [...prevState];
@@ -276,19 +301,47 @@ function Board() {
       newState.forEach((square) => {
         const xDiff = square.xAxis - xCoordinate;
         const yDiff = square.yAxis - yCoordinate;
+        // if (
+        //   (isVerticalPinned && square.xAxis !== xCoordinate) ||
+        //   (isHorizontalPinned && square.yAxis !== yCoordinate)
+        // ) {
+        //   square.isLegal = false;
+        // }
+        // if (
+        //   isUpRightDiagonalPinned &&
+        //   !(xDiff > 0 && yDiff > 0) &&
+        //   !(xDiff < 0 && yDiff < 0)
+        // ) {
+        //   square.isLegal = false;
+        // }
+        // if (isUpRightDiagonalPinned && !(Math.abs(xDiff) === Math.abs(yDiff))) {
+        //   square.isLegal = false;
+        // }
+        // /////
+        // if (
+        //   isUpLeftDiagonalPinned &&
+        //   !(xDiff < 0 && yDiff > 0) &&
+        //   !(xDiff > 0 && yDiff < 0)
+        // ) {
+        //   square.isLegal = false;
+        // }
+        // if (isUpLeftDiagonalPinned && !(Math.abs(xDiff) === Math.abs(yDiff))) {
+        //   square.isLegal = false;
+        // }
         if (
           (isVerticalPinned && square.xAxis !== xCoordinate) ||
-          (isHorizontalPinned && square.yAxis !== yCoordinate)
-        ) {
+          (isHorizontalPinned && square.yAxis !== yCoordinate) ||
+          (isUpRightDiagonalPinned && 
+              (!(xDiff > 0 && yDiff > 0) && 
+              !(xDiff < 0 && yDiff < 0) ||
+              !(Math.abs(xDiff) === Math.abs(yDiff)))) ||
+          (isUpLeftDiagonalPinned && 
+              (!(xDiff < 0 && yDiff > 0) && 
+              !(xDiff > 0 && yDiff < 0) ||
+              !(Math.abs(xDiff) === Math.abs(yDiff))))
+      ) {
           square.isLegal = false;
-        }
-        if (
-          isUpRightDiagonalPinned &&
-          !(xDiff > 0 && yDiff > 0) &&
-          !(xDiff < 0 && yDiff < 0)
-        ) {
-          square.isLegal = false;
-        }
+      }
       });
 
       return newState;
