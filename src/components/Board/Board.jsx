@@ -22,6 +22,123 @@ function Board() {
     setBoardData(startingBoardData);
   };
 
+  const handleSquareIsSeen = (coordinates, colorSeenBy) => {
+    const xCoordinate = coordinates[0];
+    const yCoordinate = coordinates[1];
+
+    // Arrays to store blocking pieces for straight lines (rook/queen)
+    const xRightBlocks = [];
+    const xLeftBlocks = [];
+    const yUpBlocks = [];
+    const yDownBlocks = [];
+
+    // Arrays to store blocking pieces for diagonals (bishop/queen)
+    const upRightBlocks = [];
+    const upLeftBlocks = [];
+    const downRightBlocks = [];
+    const downLeftBlocks = [];
+
+    // Collect blocking pieces
+    boardData.forEach((square) => {
+      if (square.piece.includes("piece__")) {
+        // Straight lines
+        if (square.xAxis === xCoordinate) {
+          if (square.yAxis > yCoordinate) yUpBlocks.push(square.yAxis);
+          if (square.yAxis < yCoordinate) yDownBlocks.push(square.yAxis);
+        }
+        if (square.yAxis === yCoordinate) {
+          if (square.xAxis > xCoordinate) xRightBlocks.push(square.xAxis);
+          if (square.xAxis < xCoordinate) xLeftBlocks.push(square.xAxis);
+        }
+
+        // Diagonals
+        const xDiff = square.xAxis - xCoordinate;
+        const yDiff = square.yAxis - yCoordinate;
+        if (Math.abs(xDiff) === Math.abs(yDiff)) {
+          if (xDiff > 0 && yDiff > 0) upRightBlocks.push(square.xAxis);
+          if (xDiff < 0 && yDiff > 0) upLeftBlocks.push(square.xAxis);
+          if (xDiff > 0 && yDiff < 0) downRightBlocks.push(square.xAxis);
+          if (xDiff < 0 && yDiff < 0) downLeftBlocks.push(square.xAxis);
+        }
+      }
+    });
+
+    return boardData.some((square) => {
+      const xDiff = square.xAxis - xCoordinate;
+      const yDiff = square.yAxis - yCoordinate;
+      if (!square.piece.includes(colorSeenBy)) return false;
+
+      // Straight line attacks (rook/queen)
+      const isStraightLineAttack =
+        (square.piece.includes("rook") || square.piece.includes("queen")) &&
+        ((square.xAxis === Math.max(...xLeftBlocks) &&
+          square.yAxis === yCoordinate) ||
+          (square.xAxis === Math.min(...xRightBlocks) &&
+            square.yAxis === yCoordinate) ||
+          (square.yAxis === Math.min(...yUpBlocks) &&
+            square.xAxis === xCoordinate) ||
+          (square.yAxis === Math.max(...yDownBlocks) &&
+            square.xAxis === xCoordinate));
+
+      // Diagonal attacks (bishop/queen)
+      const isDiagonalAttack =
+        Math.abs(xDiff) === Math.abs(yDiff) &&
+        (square.piece.includes("bishop") || square.piece.includes("queen")) &&
+        ((square.xAxis === Math.max(...upLeftBlocks) &&
+          square.yAxis > yCoordinate) ||
+          (square.xAxis === Math.min(...upRightBlocks) &&
+            square.yAxis > yCoordinate) ||
+          (square.xAxis === Math.max(...downLeftBlocks) &&
+            square.yAxis < yCoordinate) ||
+          (square.xAxis === Math.min(...downRightBlocks) &&
+            square.yAxis < yCoordinate));
+      // Knight attacks
+      const isKnightAttack =
+        square.piece.includes("knight") &&
+        ((square.xAxis === xCoordinate + 2 &&
+          (square.yAxis === yCoordinate + 1 ||
+            square.yAxis === yCoordinate - 1)) ||
+          (square.xAxis === xCoordinate - 2 &&
+            (square.yAxis === yCoordinate + 1 ||
+              square.yAxis === yCoordinate - 1)) ||
+          (square.yAxis === yCoordinate + 2 &&
+            (square.xAxis === xCoordinate + 1 ||
+              square.xAxis === xCoordinate - 1)) ||
+          (square.yAxis === yCoordinate - 2 &&
+            (square.xAxis === xCoordinate + 1 ||
+              square.xAxis === xCoordinate - 1)));
+
+      const isKingAttack =
+        square.piece.includes("king") &&
+        (square.xAxis === xCoordinate + 1 ||
+          square.xAxis === xCoordinate ||
+          square.xAxis === xCoordinate - 1) &&
+        (square.yAxis === yCoordinate + 1 ||
+          square.yAxis === yCoordinate ||
+          square.yAxis === yCoordinate - 1) &&
+        !(square.xAxis === xCoordinate && square.yAxis === yCoordinate);
+
+      const isWhitePawnAttack =
+        square.piece.includes("pawn-white") &&
+        square.yAxis + 1 === yCoordinate &&
+        Math.abs(square.xAxis - xCoordinate) === 1;
+
+      const isBlackPawnAttack =
+        square.piece.includes("pawn-black") &&
+        square.yAxis - 1 === yCoordinate &&
+        Math.abs(square.xAxis - xCoordinate) === 1;
+
+      return (
+        isStraightLineAttack ||
+        isDiagonalAttack ||
+        isKnightAttack ||
+        isKingAttack ||
+        isWhitePawnAttack ||
+        isBlackPawnAttack
+      );
+    });
+  };
+
   const handlePossibleLegalKingMoves = (coordinates) => {
     const xCoordinate = coordinates[0];
     const yCoordinate = coordinates[1];
@@ -201,7 +318,20 @@ function Board() {
   };
 
   const handleKingObstacles = (thisPieceColor) => {
+    const otherColor = thisPieceColor === "white" ? "black" : "white";
     handleKnightObstacles(thisPieceColor);
+
+    setBoardData((prevState) => {
+      const newState = [...prevState];
+
+      newState.forEach((square) => {
+        if (handleSquareIsSeen([square.xAxis, square.yAxis], otherColor)) {
+          square.isLegal = false;
+        }
+      });
+
+      return newState;
+    });
   };
 
   const handleRookObstacles = (coordinates, thisPieceColor) => {
@@ -237,26 +367,26 @@ function Board() {
         }
       });
 
-      newState.forEach((sqaure) => {
+      newState.forEach((square) => {
         if (
           !(
-            (sqaure.xAxis === Math.max(...xLeftBlocks) ||
-              sqaure.xAxis === Math.min(...xRightBlocks) ||
-              sqaure.yAxis === Math.min(...yUpBlocks) ||
-              sqaure.yAxis === Math.max(...yDownBlocks)) &&
-            sqaure.piece.includes(otherColor) &&
-            sqaure.isLegal
+            (square.xAxis === Math.max(...xLeftBlocks) ||
+              square.xAxis === Math.min(...xRightBlocks) ||
+              square.yAxis === Math.min(...yUpBlocks) ||
+              square.yAxis === Math.max(...yDownBlocks)) &&
+            square.piece.includes(otherColor) &&
+            square.isLegal
           ) &&
-          ((sqaure.xAxis <= Math.max(...xLeftBlocks) &&
-            sqaure.yAxis === yCoordinate) ||
-            (sqaure.xAxis >= Math.min(...xRightBlocks) &&
-              sqaure.yAxis === yCoordinate) ||
-            (sqaure.yAxis >= Math.min(...yUpBlocks) &&
-              sqaure.xAxis === xCoordinate) ||
-            (sqaure.yAxis <= Math.max(...yDownBlocks) &&
-              sqaure.xAxis === xCoordinate))
+          ((square.xAxis <= Math.max(...xLeftBlocks) &&
+            square.yAxis === yCoordinate) ||
+            (square.xAxis >= Math.min(...xRightBlocks) &&
+              square.yAxis === yCoordinate) ||
+            (square.yAxis >= Math.min(...yUpBlocks) &&
+              square.xAxis === xCoordinate) ||
+            (square.yAxis <= Math.max(...yDownBlocks) &&
+              square.xAxis === xCoordinate))
         ) {
-          sqaure.isLegal = false;
+          square.isLegal = false;
         }
       });
 
@@ -292,30 +422,30 @@ function Board() {
         }
       });
 
-      newState.forEach((sqaure) => {
+      newState.forEach((square) => {
         if (
           !(
-            ((sqaure.xAxis === Math.max(...upLeftBlocks) &&
-              sqaure.yAxis > yCoordinate) ||
-              (sqaure.xAxis === Math.min(...upRightBlocks) &&
-                sqaure.yAxis > yCoordinate) ||
-              (sqaure.xAxis === Math.max(...downLeftBlocks) &&
-                sqaure.yAxis < yCoordinate) ||
-              (sqaure.xAxis === Math.min(...downRightBlocks) &&
-                sqaure.yAxis < yCoordinate)) &&
-            sqaure.piece.includes(otherColor) &&
-            sqaure.isLegal
+            ((square.xAxis === Math.max(...upLeftBlocks) &&
+              square.yAxis > yCoordinate) ||
+              (square.xAxis === Math.min(...upRightBlocks) &&
+                square.yAxis > yCoordinate) ||
+              (square.xAxis === Math.max(...downLeftBlocks) &&
+                square.yAxis < yCoordinate) ||
+              (square.xAxis === Math.min(...downRightBlocks) &&
+                square.yAxis < yCoordinate)) &&
+            square.piece.includes(otherColor) &&
+            square.isLegal
           ) &&
-          ((sqaure.xAxis <= Math.max(...upLeftBlocks) &&
-            sqaure.yAxis > yCoordinate) ||
-            (sqaure.xAxis >= Math.min(...upRightBlocks) &&
-              sqaure.yAxis > yCoordinate) ||
-            (sqaure.xAxis <= Math.max(...downLeftBlocks) &&
-              sqaure.yAxis < yCoordinate) ||
-            (sqaure.xAxis >= Math.min(...downRightBlocks) &&
-              sqaure.yAxis < yCoordinate))
+          ((square.xAxis <= Math.max(...upLeftBlocks) &&
+            square.yAxis > yCoordinate) ||
+            (square.xAxis >= Math.min(...upRightBlocks) &&
+              square.yAxis > yCoordinate) ||
+            (square.xAxis <= Math.max(...downLeftBlocks) &&
+              square.yAxis < yCoordinate) ||
+            (square.xAxis >= Math.min(...downRightBlocks) &&
+              square.yAxis < yCoordinate))
         ) {
-          sqaure.isLegal = false;
+          square.isLegal = false;
         }
       });
 
@@ -413,9 +543,15 @@ function Board() {
   };
 
   const handleWhiteShortCastle = () => {
+    const e1 = boardData.find((square) => square.squareName === "e1");
     const f1 = boardData.find((square) => square.squareName === "f1");
     const g1 = boardData.find((square) => square.squareName === "g1");
-    if (!(f1.piece.includes("piece__") || g1.piece.includes("piece__"))) {
+    if (
+      !(f1.piece.includes("piece__") || g1.piece.includes("piece__")) &&
+      !handleSquareIsSeen([f1.xAxis, f1.yAxis], "black") &&
+      !handleSquareIsSeen([g1.xAxis, g1.yAxis], "black") &&
+      !handleSquareIsSeen([e1.xAxis, e1.yAxis], "black")
+    ) {
       setBoardData((prevState) => {
         const newState = [...prevState];
 
@@ -431,6 +567,7 @@ function Board() {
   };
 
   const handleWhiteLongCastle = () => {
+    const e1 = boardData.find((square) => square.squareName === "e1");
     const d1 = boardData.find((square) => square.squareName === "d1");
     const c1 = boardData.find((square) => square.squareName === "c1");
     const b1 = boardData.find((square) => square.squareName === "b1");
@@ -440,7 +577,10 @@ function Board() {
         d1.piece.includes("piece__") ||
         c1.piece.includes("piece__") ||
         b1.piece.includes("piece__")
-      )
+      ) &&
+      !handleSquareIsSeen([d1.xAxis, d1.yAxis], "black") &&
+      !handleSquareIsSeen([c1.xAxis, c1.yAxis], "black") &&
+      !handleSquareIsSeen([e1.xAxis, e1.yAxis], "black")
     ) {
       console.log("LEGAL CASTLE");
       setBoardData((prevState) => {
@@ -458,9 +598,15 @@ function Board() {
   };
 
   const handleBlackShortCastle = () => {
+    const e8 = boardData.find((square) => square.squareName === "e8");
     const f8 = boardData.find((square) => square.squareName === "f8");
     const g8 = boardData.find((square) => square.squareName === "g8");
-    if (!(f8.piece.includes("piece__") || g8.piece.includes("piece__"))) {
+    if (
+      !(f8.piece.includes("piece__") || g8.piece.includes("piece__")) &&
+      !handleSquareIsSeen([f8.xAxis, f8.yAxis], "white") &&
+      !handleSquareIsSeen([g8.xAxis, g8.yAxis], "white") &&
+      !handleSquareIsSeen([e8.xAxis, e8.yAxis], "white")
+    ) {
       setBoardData((prevState) => {
         const newState = [...prevState];
 
@@ -476,18 +622,22 @@ function Board() {
   };
 
   const handleBlackLongCastle = () => {
+    const e8 = boardData.find((square) => square.squareName === "e8");
     const d8 = boardData.find((square) => square.squareName === "d8");
     const c8 = boardData.find((square) => square.squareName === "c8");
     const b8 = boardData.find((square) => square.squareName === "b8");
-    console.log(f1.piece);
+    // console.log(f1.piece);
     if (
       !(
         d8.piece.includes("piece__") ||
         c8.piece.includes("piece__") ||
         b8.piece.includes("piece__")
-      )
+      ) &&
+      !handleSquareIsSeen([d8.xAxis, d8.yAxis], "white") &&
+      !handleSquareIsSeen([c8.xAxis, c8.yAxis], "white") &&
+      !handleSquareIsSeen([e8.xAxis, e8.yAxis], "white")
     ) {
-      console.log("LEGAL CASTLE");
+      // console.log("LEGAL CASTLE");
       setBoardData((prevState) => {
         const newState = [...prevState];
 
@@ -581,7 +731,7 @@ function Board() {
   };
 
   const movePiece = (piece, newSquareName, oldSquareCoordinates) => {
-    console.log("moved piece: ", piece, oldSquareCoordinates);
+    // console.log("moved piece: ", piece, oldSquareCoordinates);
     if (piece.includes("king-white")) {
       setHasWhiteKingMoved(true);
     }
@@ -703,7 +853,7 @@ function Board() {
     const squareData = boardData.find(
       (square) => square.squareName === event.target.id.toString()
     );
-    console.log(squareData);
+    // console.log(squareData);
     if (squareData?.isLegal) {
       movePiece(
         selectedSquare.piece,
@@ -731,6 +881,8 @@ function Board() {
 
   useEffect(() => {
     handleLegalMoves();
+    // console.log("white ", handleSquareIsSeen([4, 4], "white"));
+    // console.log("black ", handleSquareIsSeen([5, 5], "black"));
   }, [selectedSquare]);
 
   return (
