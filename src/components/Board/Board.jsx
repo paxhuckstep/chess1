@@ -230,9 +230,8 @@ function Board() {
         const yDiff = square.yAxis - yCoordinate;
         return (
           Math.abs(xDiff) === Math.abs(yDiff) &&
-          (square.piece.includes("bishop") ||
-            (square.piece.includes("queen") &&
-              square.piece.includes(otherColor))) &&
+          (square.piece.includes("bishop") || square.piece.includes("queen")) &&
+          square.piece.includes(otherColor) &&
           ((square.xAxis === Math.min(...upRightBlocks) &&
             square.yAxis > yCoordinate) ||
             (square.xAxis === Math.max(...downLeftBlocks) &&
@@ -259,9 +258,8 @@ function Board() {
         const yDiff = square.yAxis - yCoordinate;
         return (
           Math.abs(xDiff) === Math.abs(yDiff) &&
-          (square.piece.includes("bishop") ||
-            (square.piece.includes("queen") &&
-              square.piece.includes(otherColor))) &&
+          (square.piece.includes("bishop") || square.piece.includes("queen")) &&
+          square.piece.includes(otherColor) &&
           ((square.xAxis === Math.max(...upLeftBlocks) &&
             square.yAxis > yCoordinate) ||
             (square.xAxis === Math.min(...downRightBlocks) &&
@@ -331,17 +329,15 @@ function Board() {
         if (
           (isVerticalPinned && square.xAxis !== xCoordinate) ||
           (isHorizontalPinned && square.yAxis !== yCoordinate) ||
-          (isUpRightDiagonalPinned && 
-              (!(xDiff > 0 && yDiff > 0) && 
-              !(xDiff < 0 && yDiff < 0) ||
+          (isUpRightDiagonalPinned &&
+            ((!(xDiff > 0 && yDiff > 0) && !(xDiff < 0 && yDiff < 0)) ||
               !(Math.abs(xDiff) === Math.abs(yDiff)))) ||
-          (isUpLeftDiagonalPinned && 
-              (!(xDiff < 0 && yDiff > 0) && 
-              !(xDiff > 0 && yDiff < 0) ||
+          (isUpLeftDiagonalPinned &&
+            ((!(xDiff < 0 && yDiff > 0) && !(xDiff > 0 && yDiff < 0)) ||
               !(Math.abs(xDiff) === Math.abs(yDiff))))
-      ) {
+        ) {
           square.isLegal = false;
-      }
+        }
       });
 
       return newState;
