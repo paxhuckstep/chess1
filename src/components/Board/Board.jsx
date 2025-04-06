@@ -280,18 +280,10 @@ function Board() {
         );
       });
 
-    // const isUpLeftDiagonalPinned =
-    // Math.abs(xDiff) === Math.abs(yDiff) &&
-    // (square.piece.includes("bishop") || square.piece.includes("queen")) &&
-    // ((square.xAxis === Math.max(...upLeftBlocks) &&
-    //   square.yAxis > yCoordinate) ||
-    //   (square.xAxis === Math.min(...downRightBlocks) &&
-    //     square.yAxis < yCoordinate));
-
-    console.log("Vertical Pin: ", isVerticalPinned);
-    console.log("Horizontal Pin: ", isHorizontalPinned);
-    console.log("upRightDiagonal pin ", isUpRightDiagonalPinned);
-    console.log("up Left diagonal pin: ", isUpLeftDiagonalPinned);
+    // console.log("Vertical Pin: ", isVerticalPinned);
+    // console.log("Horizontal Pin: ", isHorizontalPinned);
+    // console.log("upRightDiagonal pin ", isUpRightDiagonalPinned);
+    // console.log("up Left diagonal pin: ", isUpLeftDiagonalPinned);
 
     setBoardData((prevState) => {
       const newState = [...prevState];
