@@ -22,7 +22,7 @@ function Board() {
     setBoardData(startingBoardData);
   };
 
-  const handleSquareIsSeen = (coordinates, colorSeenBy) => {
+  const isSquareSeen = (coordinates, colorSeenBy) => {
     const xCoordinate = coordinates[0];
     const yCoordinate = coordinates[1];
 
@@ -318,14 +318,14 @@ function Board() {
   };
 
   const handleKingObstacles = (thisPieceColor) => {
-    const otherColor = thisPieceColor === "white" ? "black" : "white";
     handleKnightObstacles(thisPieceColor);
-
+    
+    const otherColor = thisPieceColor === "white" ? "black" : "white";
     setBoardData((prevState) => {
       const newState = [...prevState];
 
       newState.forEach((square) => {
-        if (handleSquareIsSeen([square.xAxis, square.yAxis], otherColor)) {
+        if (isSquareSeen([square.xAxis, square.yAxis], otherColor)) {
           square.isLegal = false;
         }
       });
@@ -548,9 +548,9 @@ function Board() {
     const g1 = boardData.find((square) => square.squareName === "g1");
     if (
       !(f1.piece.includes("piece__") || g1.piece.includes("piece__")) &&
-      !handleSquareIsSeen([f1.xAxis, f1.yAxis], "black") &&
-      !handleSquareIsSeen([g1.xAxis, g1.yAxis], "black") &&
-      !handleSquareIsSeen([e1.xAxis, e1.yAxis], "black")
+      !isSquareSeen([f1.xAxis, f1.yAxis], "black") &&
+      !isSquareSeen([g1.xAxis, g1.yAxis], "black") &&
+      !isSquareSeen([e1.xAxis, e1.yAxis], "black")
     ) {
       setBoardData((prevState) => {
         const newState = [...prevState];
@@ -578,9 +578,9 @@ function Board() {
         c1.piece.includes("piece__") ||
         b1.piece.includes("piece__")
       ) &&
-      !handleSquareIsSeen([d1.xAxis, d1.yAxis], "black") &&
-      !handleSquareIsSeen([c1.xAxis, c1.yAxis], "black") &&
-      !handleSquareIsSeen([e1.xAxis, e1.yAxis], "black")
+      !isSquareSeen([d1.xAxis, d1.yAxis], "black") &&
+      !isSquareSeen([c1.xAxis, c1.yAxis], "black") &&
+      !isSquareSeen([e1.xAxis, e1.yAxis], "black")
     ) {
       console.log("LEGAL CASTLE");
       setBoardData((prevState) => {
@@ -603,9 +603,9 @@ function Board() {
     const g8 = boardData.find((square) => square.squareName === "g8");
     if (
       !(f8.piece.includes("piece__") || g8.piece.includes("piece__")) &&
-      !handleSquareIsSeen([f8.xAxis, f8.yAxis], "white") &&
-      !handleSquareIsSeen([g8.xAxis, g8.yAxis], "white") &&
-      !handleSquareIsSeen([e8.xAxis, e8.yAxis], "white")
+      !isSquareSeen([f8.xAxis, f8.yAxis], "white") &&
+      !isSquareSeen([g8.xAxis, g8.yAxis], "white") &&
+      !isSquareSeen([e8.xAxis, e8.yAxis], "white")
     ) {
       setBoardData((prevState) => {
         const newState = [...prevState];
@@ -633,9 +633,9 @@ function Board() {
         c8.piece.includes("piece__") ||
         b8.piece.includes("piece__")
       ) &&
-      !handleSquareIsSeen([d8.xAxis, d8.yAxis], "white") &&
-      !handleSquareIsSeen([c8.xAxis, c8.yAxis], "white") &&
-      !handleSquareIsSeen([e8.xAxis, e8.yAxis], "white")
+      !isSquareSeen([d8.xAxis, d8.yAxis], "white") &&
+      !isSquareSeen([c8.xAxis, c8.yAxis], "white") &&
+      !isSquareSeen([e8.xAxis, e8.yAxis], "white")
     ) {
       // console.log("LEGAL CASTLE");
       setBoardData((prevState) => {
@@ -881,8 +881,8 @@ function Board() {
 
   useEffect(() => {
     handleLegalMoves();
-    // console.log("white ", handleSquareIsSeen([4, 4], "white"));
-    // console.log("black ", handleSquareIsSeen([5, 5], "black"));
+    // console.log("white ", isSquareSeen([4, 4], "white"));
+    // console.log("black ", isSquareSeen([5, 5], "black"));
   }, [selectedSquare]);
 
   return (
