@@ -12,31 +12,37 @@ Currently, two official plugins are available:
 If you are developing a production application, we recommend using TypeScript and enable type-aware lint rules. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-This is a personal project of mine to challenge my skills and help grow as a developer.
-The goal is simple, make a fully functional chess board on my own.
-Sub-goal: rely on AI as little as possible to help develop my own skills as a programmer.
+This is a personal project to challenge my skills and help me grow as a developer.
+The goal is simple: create a fully functional chess board on my own.
+Sub-goal: rely minimally on AI to develop my programming skills independently.
 
+Going into this project, I knew there would be many technical challenges ahead - some I anticipated would be difficult, some proved harder than expected, and others were surprisingly straightforward.
 
-Going into this project, I knew there was a lot of technical challenges ahead of me. Some I knew would be hard, some harder than expected, and others easier than expected.
+The Knight's Movement
+The knight piece was definitely easier than expected to implement. Although it's often the most confusing piece for new chess players, it was the simplest to code. Its possible moves are consistent, and once I created the "handlePossibleLegalKnightMoves" function, the rest fell into place naturally.
 
-The piece that was definitely easier than expected was the knight.
-Although probably the most confusing to knew players of chess, it was the easiest to code. The possible moves are always the same, and once the if statement of "handlePossibelLegalKnightMoves" was made, the rest was easy.
+Piece Movement and Obstacles
+Checking obstacles for the knight simply involves ensuring it doesn't land on friendly pieces. This logic, implemented in "handleKnightObstacles", became reusable across all pieces. While I could rename it to "handleDontMoveOnSameColor" for better readability, I prefer the current name. It complements how "handlePossibleLegalQueenMoves" combines "handlePossibleLegalBishopMoves" and "handlePossibleLegalRookMoves".
 
-Checking obstacles for the knight is just making sure you don't land on your own piece. Which I end up re-using for every other piece, I could rename "handleKnightObstacles" to "handleDontMoveOnSameColor" which could help with readibility because "handleKnightObstacles" is used in every other piece's osbtacle handling function. But I like the way it is. It pairs nicely with "handlePossbleLegalQueenMoves" just being a combination of "handlePossibleLegalBishopMoves" and "handlePossibleLegalRookMoves". 
+The Bishop Challenge
+The bishop proved surprisingly challenging to code. Initially, checking diagonals wasn't intuitive - you can see my first approach in "handlePossibleLegalBishopMoves". The AI later suggested a clever solution in "isSquareSeen: isDiagonalAttack", which I adopted for subsequent diagonal calculations while keeping my original solution to showcase my problem-solving approach. After figuring out "handleRookObstacles", adapting it for the bishop became more manageable.
 
-The bishop ended up being the biggest surprise in difficulty to code. Cleanly checking diagonals wasn't obvious initially, you can see my first method in "handlePossibleLegalBishopMoves" for finding diagonals. Compared to the later approach inside of "isSquareSeen: isDiagonalAttack" where I got a little help from AI, I thought the AI's solution was very clever and used it for diagonal calculations beyond that point, but kept my original solution to show my creativity. "handleBishopObstacles" was terrifying to think about at first, however after I figured out "handleRookObstacles" adjusting it for the bishop was not that bad at all.
+The Rook and Queen Implementation
+"handleRookObstacles" contains some redundant code that doesn't affect rook movement. This was intentional to allow "handleQueenObstacles" to simply call both "handleBishopObstacles" and "handleRookObstacles" without issues - a small but interesting optimization.
 
-"handleRookObstacles" has some extra code in it that doesn't ever do anything when interacting with a rook. However because I wanted "handleQueenObstacles" to just call "handleBishopObstacles" and "handleRookObstacles" I had to adjust "handleRookObstacles" so that it would stop setting squares on the diagonals to false when random criteria was met. It's something small, but I think it's fun.
+Pinned Pieces Logic
+"handleIsPinnedToKing" required significant strategic thinking. The main challenge was that pinned pieces can still move within certain constraints - they just can't expose the king to check. The solution tracks four pin directions (vertical, horizontal, upLeftDiagonal, upRightDiagonal) without needing to track the specific side of the pin, which significantly simplified the implementation.
 
-"handleIsPinnedToKing" took a lot of thinking about away from my computer. I knew it was going to be a challenge, and I was correct. There are multiple complicating factors, the main one being that a piece pinned to the king can still move, it just can't expose the king to check, so you can't just freeze it. My inital thought was to just set all squares that aren't within a "queen's vision" of the king to false whenever a selected peice is pinned to the king. However this allowed a piece pinned diagonally to the king to still move to a square vertical of the king, and vice-versa. So not only do you have to check if a piece is pinned to the king, you need to know how it is pinned, and then set all squares that aren't along that pin's direction to false. "handleIsPinnedToKing" does all of that, and I am happy with how it turned out.
+Check Detection
+For "handleIsChecked", I initially struggled with allowing pieces to block check. The breakthrough came when implementing board state copying to test potential moves without affecting the actual game state - a solution that worked seamlessly.
 
-When working on "handleIsPinnedToKing" I quickly realized that a rook pinning a piece to the king from above or below effected the piece in exactly the same way, so we only keep track of if the pin is vertical, horizontal, upLeftDiagonal, or upRightDiagonal. We don't care about which side of the piece the attacking piece and king are on.
+Future Implementation
+Remaining features to implement:
+- Pawn promotion
+- En passant
+- Turn system
 
-When actually checking for a pin (we'll use horizontal as an example) we are checking two things. If the closest piece horizontally on either side is a rook / queen of the opposite color, and if the closest piece (again on either side) is the king of the same color. Not having to keep track of which piece is on which side is nice piece of game logic that made it much easier to code, you just check that they're the 2 closest pieces horizontally. Checking the closest pieces in each direction has a lot of logic barrowed from the obstacle hanlding of rooks and bishops.
-
-For "handleIsChecked" I was really struggling to solve for allowing pieces to move and block the check because I needed to move the piece inside the boardData to check if it would block the check or not. Eventually I asked AI and it suggested creating a copy of the board to do the checks, and use the results to deal with the piece's legal moves on the real board. This solution ended up working seamlessly. 
-
-I still need to add pawn promotion, en pessant, and turns. I only expect en pessant to be a challenge. Turns will super easy and I'm doing it last because testing is so much easier without having to worry about turns. And pawn promotion shouldn't be that bad, just some extra html elements need to be made for selecting what piece you're promoting to. 
+I expect en passant to be the most challenging of these. The turn system is being implemented last to facilitate testing, and pawn promotion mainly requires adding UI elements for piece selection.
 
 deployed at: 
 paxchess.netlify.app
