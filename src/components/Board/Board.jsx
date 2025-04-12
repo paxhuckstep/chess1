@@ -5,7 +5,7 @@ import Pieces from "../Pieces/Pieces";
 import { startingBoardData } from "../../utils/startingBoardData";
 import { alphabetArray } from "../../utils/constants";
 
-function Board() {
+function Board({ shouldReset, setShouldReset }) {
   const [boardData, setBoardData] = useState([]);
   const [selectedSquare, setSelectedSquare] = useState({
     piece: "",
@@ -19,7 +19,19 @@ function Board() {
   const [hasRookH8Moved, setHasRookH8Moved] = useState(false);
 
   const resetBoard = () => {
-    setBoardData(startingBoardData);
+    console.log("reset board fired");
+    const freshBoardData = structuredClone(startingBoardData);
+    setBoardData(freshBoardData);
+    setSelectedSquare({
+      piece: "",
+      coordinates: [],
+    });
+    setHasWhiteKingMoved(false);
+    setHasRookA1Moved(false);
+    setHasRookH1Moved(false);
+    setHasBlackKingMoved(false);
+    setHasRookA8Moved(false);
+    setHasRookH8Moved(false);
   };
 
   const isSquareSeen = (coordinates, colorSeenBy, boardToCheck = boardData) => {
@@ -287,84 +299,84 @@ function Board() {
     });
   };
 
-
-const handleIsChecked = (thisPieceColor) => {
-  const whiteKing = boardData.find((square) =>
+  const handleIsChecked = (thisPieceColor) => {
+    const whiteKing = boardData.find((square) =>
       square.piece.includes("king-white")
-  );
-  const blackKing = boardData.find((square) =>
+    );
+    const blackKing = boardData.find((square) =>
       square.piece.includes("king-black")
-  );
+    );
 
-  if (
+    if (
       thisPieceColor === "white" &&
       isSquareSeen([whiteKing.xAxis, whiteKing.yAxis], "black")
-  ) {
+    ) {
       setBoardData((prevState) => {
-          const newState = [...prevState];
-
-          newState.forEach((square) => {
-              if (square.isLegal) { 
-                  if (selectedSquare.piece.includes("king")) {
-                    return;
-                }
-                  const tempBoardData = boardData.map(s => ({ ...s }));
-                  const tempSquareIndex = tempBoardData[(8 - square.yAxis) * 8 + (square.xAxis - 1)];
-                  
-                  // if (tempSquareIndex) {
-                      tempSquareIndex.piece = "piece_";
-                      if (isSquareSeen(
-                          [whiteKing.xAxis, whiteKing.yAxis],
-                          "black",
-                          tempBoardData
-                      )) {
-                          square.isLegal = false;
-                          
-                      }
-                  // }
-              }
-          });
-
-          return newState;
-      });
-  }
-  if (
-    thisPieceColor === "black"
-     &&
-    isSquareSeen([blackKing?.xAxis, blackKing?.yAxis], "white")
-) {
-    setBoardData((prevState) => {
         const newState = [...prevState];
 
         newState.forEach((square) => {
-            if (square.isLegal) {  
-                if (selectedSquare.piece.includes("king")) {
-                  return;
-              }
-                const tempBoardData = boardData.map(s => ({ ...s }));
-                const tempSquareIndex = tempBoardData[(8 - square.yAxis) * 8 + (square.xAxis - 1)];
-                
-                if (tempSquareIndex) {
-       
-                    tempSquareIndex.piece = "piece_";
-
-   
-                    if (isSquareSeen(
-                        [blackKing.xAxis, blackKing.yAxis],
-                        "white",
-                        tempBoardData
-                    )) {
-                        square.isLegal = false;
-                    
-                    }
-                }
+          if (square.isLegal) {
+            if (selectedSquare.piece.includes("king")) {
+              return;
             }
+            const tempBoardData = boardData.map((s) => ({ ...s }));
+            const tempSquareIndex =
+              tempBoardData[(8 - square.yAxis) * 8 + (square.xAxis - 1)];
+
+            // if (tempSquareIndex) {
+            tempSquareIndex.piece = "piece_";
+            if (
+              isSquareSeen(
+                [whiteKing.xAxis, whiteKing.yAxis],
+                "black",
+                tempBoardData
+              )
+            ) {
+              square.isLegal = false;
+            }
+            // }
+          }
         });
 
         return newState;
-    });
-}
-};
+      });
+    }
+    if (
+      thisPieceColor === "black" &&
+      isSquareSeen([blackKing?.xAxis, blackKing?.yAxis], "white")
+    ) {
+      setBoardData((prevState) => {
+        const newState = [...prevState];
+
+        newState.forEach((square) => {
+          if (square.isLegal) {
+            if (selectedSquare.piece.includes("king")) {
+              return;
+            }
+            const tempBoardData = boardData.map((s) => ({ ...s }));
+            const tempSquareIndex =
+              tempBoardData[(8 - square.yAxis) * 8 + (square.xAxis - 1)];
+
+            if (tempSquareIndex) {
+              tempSquareIndex.piece = "piece_";
+
+              if (
+                isSquareSeen(
+                  [blackKing.xAxis, blackKing.yAxis],
+                  "white",
+                  tempBoardData
+                )
+              ) {
+                square.isLegal = false;
+              }
+            }
+          }
+        });
+
+        return newState;
+      });
+    }
+  };
 
   const handlePossibleLegalKingMoves = (coordinates) => {
     const xCoordinate = coordinates[0];
@@ -549,28 +561,35 @@ const handleIsChecked = (thisPieceColor) => {
 
     const otherColor = thisPieceColor === "white" ? "black" : "white";
     setBoardData((prevState) => {
-        const newState = [...prevState];
+      const newState = [...prevState];
 
-        newState.forEach((square) => {
-            if (square.isLegal) {
-                const tempBoardData = boardData.map(s => ({ ...s }));
-                const kingCurrentSquare = tempBoardData.find(s => 
-                    s.xAxis === selectedSquare.coordinates[0] && 
-                    s.yAxis === selectedSquare.coordinates[1]
-                );
-                // if (kingCurrentSquare) {
-                    kingCurrentSquare.piece = ""; 
-                // }
+      newState.forEach((square) => {
+        if (square.isLegal) {
+          const tempBoardData = boardData.map((s) => ({ ...s }));
+          const kingCurrentSquare = tempBoardData.find(
+            (s) =>
+              s.xAxis === selectedSquare.coordinates[0] &&
+              s.yAxis === selectedSquare.coordinates[1]
+          );
+          // if (kingCurrentSquare) {
+          kingCurrentSquare.piece = "";
+          // }
 
-                if (isSquareSeen([square.xAxis, square.yAxis], otherColor, tempBoardData)) {
-                    square.isLegal = false;
-                }
-            }
-        });
+          if (
+            isSquareSeen(
+              [square.xAxis, square.yAxis],
+              otherColor,
+              tempBoardData
+            )
+          ) {
+            square.isLegal = false;
+          }
+        }
+      });
 
-        return newState;
+      return newState;
     });
-};
+  };
 
   const handleRookObstacles = (coordinates, thisPieceColor) => {
     const otherColor = thisPieceColor === "white" ? "black" : "white";
@@ -1066,21 +1085,21 @@ const handleIsChecked = (thisPieceColor) => {
     });
   };
 
-  const handleMouseUp = (event) => {
-        // console.log("MOUSE UP UP - target id:", event.target);
-        const squareData = boardData.find(
-          (square) => square.squareName === event.target.id.toString()
-        );
-        if (squareData?.isLegal) {
-          movePiece(
-            selectedSquare.piece,
-            squareData.squareName,
-            selectedSquare.coordinates
-          );
-        }
-          //  window.removeEventListener("mouseup", handleMouseUp);
+  // const handleMouseUp = (event) => {
+  //       // console.log("MOUSE UP UP - target id:", event.target);
+  //       const squareData = boardData.find(
+  //         (square) => square.squareName === event.target.id.toString()
+  //       );
+  //       if (squareData?.isLegal) {
+  //         movePiece(
+  //           selectedSquare.piece,
+  //           squareData.squareName,
+  //           selectedSquare.coordinates
+  //         );
+  //       }
+  //         //  window.removeEventListener("mouseup", handleMouseUp);
 
-  };
+  // };
 
   const handleMouseDown = (event) => {
     // console.log("MOUSE DOWN - target id:", event.target);
@@ -1107,21 +1126,24 @@ const handleIsChecked = (thisPieceColor) => {
 
   useEffect(() => {
     window.addEventListener("mousedown", handleMouseDown);
-    window.addEventListener("mouseup", handleMouseUp);
+    // window.addEventListener("mouseup", handleMouseUp);
 
     return () => {
       window.removeEventListener("mousedown", handleMouseDown);
-      window.removeEventListener("mouseup", handleMouseUp);
+      // window.removeEventListener("mouseup", handleMouseUp);
     };
   }, [selectedSquare, boardData]);
 
   useEffect(() => {
-    resetBoard();
-  }, []);
-
-  useEffect(() => {
     handleLegalMoves();
   }, [selectedSquare]);
+
+  useEffect(() => {
+    if (shouldReset) {
+      resetBoard();
+      setShouldReset(false);
+    }
+  }, [shouldReset]);
 
   return (
     <>
