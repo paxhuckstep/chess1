@@ -1066,6 +1066,22 @@ const handleIsChecked = (thisPieceColor) => {
     });
   };
 
+  const handleMouseUp = (event) => {
+        // console.log("MOUSE UP UP - target id:", event.target);
+        const squareData = boardData.find(
+          (square) => square.squareName === event.target.id.toString()
+        );
+        if (squareData?.isLegal) {
+          movePiece(
+            selectedSquare.piece,
+            squareData.squareName,
+            selectedSquare.coordinates
+          );
+        }
+          //  window.removeEventListener("mouseup", handleMouseUp);
+
+  };
+
   const handleMouseDown = (event) => {
     // console.log("MOUSE DOWN - target id:", event.target);
     const piece = event.target.className;
@@ -1085,18 +1101,19 @@ const handleIsChecked = (thisPieceColor) => {
       );
     } else {
       setSelectedSquare({ piece, coordinates });
+      // window.addEventListener("mouseup", handleMouseUp);
     }
   };
 
   useEffect(() => {
     window.addEventListener("mousedown", handleMouseDown);
-    // window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("mouseup", handleMouseUp);
 
     return () => {
       window.removeEventListener("mousedown", handleMouseDown);
-      // window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("mouseup", handleMouseUp);
     };
-  }, [selectedSquare]);
+  }, [selectedSquare, boardData]);
 
   useEffect(() => {
     resetBoard();
