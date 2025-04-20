@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import "./App.css";
 import Board from "./components/Board/Board";
-import { startingBoardData } from "./utils/startingBoardData";
+// import { startingBoardData } from "./utils/startingBoardData";
 
 function App() {
   const [shouldReset, setShouldReset] = useState(true);
