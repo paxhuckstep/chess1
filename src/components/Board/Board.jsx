@@ -18,6 +18,8 @@ function Board({ shouldReset, setShouldReset }) {
   const [hasBlackKingMoved, setHasBlackKingMoved] = useState(false);
   const [hasRookA8Moved, setHasRookA8Moved] = useState(false);
   const [hasRookH8Moved, setHasRookH8Moved] = useState(false);
+  const [whiteEnPessant, setWhiteEnPessant] = useState(false);
+  const [blackEnPessant, setBlackEnPessant] = useState(false);
 
   const resetBoard = () => {
     console.log("reset board fired");
@@ -33,6 +35,9 @@ function Board({ shouldReset, setShouldReset }) {
     setHasBlackKingMoved(false);
     setHasRookA8Moved(false);
     setHasRookH8Moved(false);
+    setIsWhiteTurn(true);
+    setWhiteEnPessant(false);
+    setBlackEnPessant(false);
   };
 
   const isSquareSeen = (coordinates, colorSeenBy, boardToCheck = boardData) => {
@@ -324,7 +329,6 @@ function Board({ shouldReset, setShouldReset }) {
             const tempSquareIndex =
               tempBoardData[(8 - square.yAxis) * 8 + (square.xAxis - 1)];
 
-            // if (tempSquareIndex) {
             tempSquareIndex.piece = "piece_";
             if (
               isSquareSeen(
@@ -335,7 +339,6 @@ function Board({ shouldReset, setShouldReset }) {
             ) {
               square.isLegal = false;
             }
-            // }
           }
         });
 
@@ -572,9 +575,7 @@ function Board({ shouldReset, setShouldReset }) {
               s.xAxis === selectedSquare.coordinates[0] &&
               s.yAxis === selectedSquare.coordinates[1]
           );
-          // if (kingCurrentSquare) {
           kingCurrentSquare.piece = "";
-          // }
 
           if (
             isSquareSeen(
@@ -716,18 +717,27 @@ function Board({ shouldReset, setShouldReset }) {
 
       newState.forEach((square) => {
         if (
-          (!(
+          ((!(
             (square.xAxis === xCoordinate - 1 ||
               square.xAxis === xCoordinate + 1) &&
             square.yAxis === yCoordinate + 1 &&
             square.piece.includes("black")
           ) &&
             square.xAxis !== xCoordinate) ||
-          ((square.yAxis === yCoordinate + 1 ||
-            square.yAxis === yCoordinate + 2) &&
-            square.xAxis === xCoordinate &&
-            square.piece.includes("piece__")) ||
-          (square.yAxis === 4 && isDoubleJumpedBlocked && yCoordinate === 2)
+            ((square.yAxis === yCoordinate + 1 ||
+              square.yAxis === yCoordinate + 2) &&
+              square.xAxis === xCoordinate &&
+              square.piece.includes("piece__")) ||
+            (square.yAxis === 4 &&
+              isDoubleJumpedBlocked &&
+              yCoordinate === 2)) &&
+          !(
+            whiteEnPessant &&
+            square.yAxis === 6 &&
+            square.xAxis === whiteEnPessant &&
+            (xCoordinate === whiteEnPessant + 1 ||
+              xCoordinate === whiteEnPessant - 1)
+          )
         ) {
           square.isLegal = false;
         }
@@ -757,18 +767,27 @@ function Board({ shouldReset, setShouldReset }) {
 
       newState.forEach((square) => {
         if (
-          (!(
+          ((!(
             (square.xAxis === xCoordinate - 1 ||
               square.xAxis === xCoordinate + 1) &&
             square.yAxis === yCoordinate - 1 &&
             square.piece.includes("white")
           ) &&
             square.xAxis !== xCoordinate) ||
-          ((square.yAxis === yCoordinate - 1 ||
-            square.yAxis === yCoordinate - 2) &&
-            square.xAxis === xCoordinate &&
-            square.piece.includes("piece__")) ||
-          (square.yAxis === 5 && isDoubleJumpedBlocked && yCoordinate === 7)
+            ((square.yAxis === yCoordinate - 1 ||
+              square.yAxis === yCoordinate - 2) &&
+              square.xAxis === xCoordinate &&
+              square.piece.includes("piece__")) ||
+            (square.yAxis === 5 &&
+              isDoubleJumpedBlocked &&
+              yCoordinate === 7)) &&
+          !(
+            blackEnPessant &&
+            square.yAxis === 3 &&
+            square.xAxis === blackEnPessant &&
+            (xCoordinate === blackEnPessant + 1 ||
+              xCoordinate === blackEnPessant - 1)
+          )
         ) {
           square.isLegal = false;
         }
@@ -976,7 +995,6 @@ function Board({ shouldReset, setShouldReset }) {
       }
     }
   };
-
   const movePiece = (piece, newSquareName, oldSquareCoordinates) => {
     // console.log("moved piece: ", piece, oldSquareCoordinates);
     if (piece.includes("king-white")) {
@@ -1074,8 +1092,24 @@ function Board({ shouldReset, setShouldReset }) {
           square.piece = piece.slice(6);
         }
         if (
-          square.xAxis === oldSquareCoordinates[0] &&
-          square.yAxis === oldSquareCoordinates[1]
+          (square.xAxis === oldSquareCoordinates[0] &&
+            square.yAxis === oldSquareCoordinates[1]) ||
+          (whiteEnPessant ===
+            alphabetArray.indexOf(newSquareName.charAt(0)) + 1 &&
+            piece.includes("pawn") &&
+            oldSquareCoordinates[1] === 5 &&
+            (oldSquareCoordinates[0] === whiteEnPessant + 1 ||
+              oldSquareCoordinates[0] === whiteEnPessant - 1) &&
+            square.xAxis === whiteEnPessant &&
+            square.yAxis === 5) ||
+          (blackEnPessant ===
+            alphabetArray.indexOf(newSquareName.charAt(0)) + 1 &&
+            piece.includes("pawn") &&
+            oldSquareCoordinates[1] === 4 &&
+            (oldSquareCoordinates[0] === blackEnPessant + 1 ||
+              oldSquareCoordinates[0] === blackEnPessant - 1) &&
+            square.xAxis === blackEnPessant &&
+            square.yAxis === 4)
         ) {
           square.piece = "";
         }
@@ -1092,6 +1126,27 @@ function Board({ shouldReset, setShouldReset }) {
       setIsWhiteTurn(false);
     } else {
       setIsWhiteTurn(true);
+    }
+    if (
+      oldSquareCoordinates[1] === 2 &&
+      piece.includes("pawn") &&
+      newSquareName.includes("4")
+    ) {
+      setBlackEnPessant(oldSquareCoordinates[0]);
+      console.log("setBlackEnPessant ran");
+    } else {
+      setBlackEnPessant(false);
+    }
+
+    if (
+      oldSquareCoordinates[1] === 7 &&
+      piece.includes("pawn") &&
+      newSquareName.includes("5")
+    ) {
+      setWhiteEnPessant(oldSquareCoordinates[0]);
+      console.log("setWhiteEnPessant ran");
+    } else {
+      setWhiteEnPessant(false);
     }
   };
 
