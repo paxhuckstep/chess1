@@ -4,6 +4,7 @@ import BoardBackground from "../BoardBackground/BoardBackground";
 import Pieces from "../Pieces/Pieces";
 import { startingBoardData } from "../../utils/startingBoardData";
 import { alphabetArray } from "../../utils/constants";
+import PromotionSelector from "../PromotionSelector/PromotionSelector";
 
 function Board({ shouldReset, setShouldReset }) {
   const [boardData, setBoardData] = useState([]);
@@ -20,6 +21,9 @@ function Board({ shouldReset, setShouldReset }) {
   const [hasRookH8Moved, setHasRookH8Moved] = useState(false);
   const [whiteEnPessant, setWhiteEnPessant] = useState(false);
   const [blackEnPessant, setBlackEnPessant] = useState(false);
+  const [isPromotion, setIsPromotion] = useState(false);
+  const [promotionColor, setPromotionColor] = useState("");
+  const [promotionSquare, setPromotionSquare] = useState("");
 
   const resetBoard = () => {
     console.log("reset board fired");
@@ -39,6 +43,27 @@ function Board({ shouldReset, setShouldReset }) {
     setWhiteEnPessant(false);
     setBlackEnPessant(false);
   };
+
+  const handlePromotion = (piece) => {
+    // console.log(piece)
+    setBoardData((prevState) => {
+      // console.log(prevState);
+      const newState = [...prevState];
+
+      newState.forEach((square) => {
+        if (
+      square.squareName === promotionSquare
+        ) {
+          square.piece = piece
+        }
+      });
+//edits
+      return newState;
+    });
+    setIsPromotion(false)
+    setPromotionColor("")
+    setPromotionSquare("")
+  }
 
   const isSquareSeen = (coordinates, colorSeenBy, boardToCheck = boardData) => {
     const xCoordinate = coordinates[0];
@@ -1133,7 +1158,7 @@ function Board({ shouldReset, setShouldReset }) {
       newSquareName.includes("4")
     ) {
       setBlackEnPessant(oldSquareCoordinates[0]);
-      console.log("setBlackEnPessant ran");
+      // console.log("setBlackEnPessant ran");
     } else {
       setBlackEnPessant(false);
     }
@@ -1144,9 +1169,22 @@ function Board({ shouldReset, setShouldReset }) {
       newSquareName.includes("5")
     ) {
       setWhiteEnPessant(oldSquareCoordinates[0]);
-      console.log("setWhiteEnPessant ran");
+      // console.log("setWhiteEnPessant ran");
     } else {
       setWhiteEnPessant(false);
+    }
+    if (piece.includes("pawn") && newSquareName.includes("8")) {
+      // console.log("white is promoting");
+      setIsPromotion(true);
+      setPromotionColor("white");
+      setPromotionSquare(newSquareName);
+      //edits
+    }
+    if (piece.includes("pawn") && newSquareName.includes("1")) {
+      setIsPromotion(true);
+      setPromotionColor("black");
+      setPromotionSquare(newSquareName);
+      //edits
     }
   };
 
@@ -1177,13 +1215,13 @@ function Board({ shouldReset, setShouldReset }) {
       (square) => square.squareName === event.target.id.toString()
     );
     // console.log(squareData);
-    if (squareData?.isLegal) {
+    if (squareData?.isLegal && !isPromotion) {
       movePiece(
         selectedSquare.piece,
         squareData.squareName,
         selectedSquare.coordinates
       );
-    } else {
+    } else if(!isPromotion) {
       setSelectedSquare({ piece, coordinates });
       // window.addEventListener("mouseup", handleMouseUp);
     }
@@ -1213,6 +1251,7 @@ function Board({ shouldReset, setShouldReset }) {
   return (
     <>
       <div className="board">
+        <PromotionSelector isOpen={isPromotion} color={promotionColor} handlePromotion={handlePromotion} />
         <Pieces boardData={boardData} />
         <BoardBackground boardData={boardData} />
       </div>

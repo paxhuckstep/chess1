@@ -1,54 +1,53 @@
 .pieces {
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: grid;
-    grid-template: repeat(8, 100px) / repeat(8, 100px);
-    height: 800px;
-    width: 800px;
-    z-index: 999;
-  }
-  .piece {
-    /* background-color: transparent; */
-    background-size: contain;
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-  .piece__pawn-black {
-    background-image: url("../../assets/blackPawn.png");
-
-  }
-  .piece__pawn-white {
-    background-image: url("../../assets/whitePawn.png");
-  }
-  .piece__rook-black {
-    background-image: url("../../assets/blackRook.png");
-  }
-  .piece__rook-white {
-    background-image: url("../../assets/whiteRook.png");
-  }
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  grid-template: repeat(8, 100px) / repeat(8, 100px);
+  height: 800px;
+  width: 800px;
+  z-index: 500;
+}
+.piece {
+  /* background-color: transparent; */
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+.piece__pawn-black {
+  background-image: url("../../assets/blackPawn.png");
+}
+.piece__pawn-white {
+  background-image: url("../../assets/whitePawn.png");
+}
+.piece__rook-black {
+  background-image: url("../../assets/blackRook.png");
+}
+.piece__rook-white {
+  background-image: url("../../assets/whiteRook.png");
+}
 
 .piece__knight-black {
-    background-image: url("../../assets/blackKnight.png"); 
+  background-image: url("../../assets/blackKnight.png");
 }
 .piece__knight-white {
-    background-image: url("../../assets/whiteKnight.png"); 
+  background-image: url("../../assets/whiteKnight.png");
 }
 .piece__bishop-black {
-    background-image: url("../../assets/blackBishop.png"); 
+  background-image: url("../../assets/blackBishop.png");
 }
 .piece__bishop-white {
-    background-image: url("../../assets/whiteBishop.png"); 
+  background-image: url("../../assets/whiteBishop.png");
 }
 .piece__queen-black {
-    background-image: url("../../assets/blackQueen.png"); 
+  background-image: url("../../assets/blackQueen.png");
 }
 .piece__queen-white {
-    background-image: url("../../assets/whiteQueen.png"); 
+  background-image: url("../../assets/whiteQueen.png");
 }
 .piece__king-black {
-    background-image: url("../../assets/blackKing.png"); 
+  background-image: url("../../assets/blackKing.png");
 }
 .piece__king-white {
-    background-image: url("../../assets/whiteKing.png"); 
+  background-image: url("../../assets/whiteKing.png");
 }

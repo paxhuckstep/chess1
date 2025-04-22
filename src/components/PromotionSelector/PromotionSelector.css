@@ -1,0 +1,51 @@
+.selector {
+  position: absolute;
+  left: 350px;
+  top: 180px;
+  z-index: 999;
+  display: flex;
+  flex-direction: column;
+  width: 100px;
+  gap: 10px;
+  background-color: grey;
+  border: solid black 2px;
+}
+
+.selector__button {
+  border: solid black 2px;
+  background-color: lightgray;
+  height: 100px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.selector__button_queen-white {
+  background-image: url("../../assets/whiteQueen.png");
+}
+
+.selector__button_knight-white {
+  background-image: url("../../assets/whiteKnight.png");
+}
+
+.selector__button_rook-white {
+  background-image: url("../../assets/whiteRook.png");
+}
+.selector__button_bishop-white {
+  background-image: url("../../assets/whiteBishop.png");
+}
+
+.selector__button_queen-black {
+  background-image: url("../../assets/blackQueen.png");
+}
+
+.selector__button_knight-black {
+  background-image: url("../../assets/blackKnight.png");
+}
+
+.selector__button_rook-black {
+  background-image: url("../../assets/blackRook.png");
+}
+.selector__button_bishop-black {
+  background-image: url("../../assets/blackBishop.png");
+}
