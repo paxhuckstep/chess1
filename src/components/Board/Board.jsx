@@ -51,19 +51,17 @@ function Board({ shouldReset, setShouldReset }) {
       const newState = [...prevState];
 
       newState.forEach((square) => {
-        if (
-      square.squareName === promotionSquare
-        ) {
-          square.piece = piece
+        if (square.squareName === promotionSquare) {
+          square.piece = piece;
         }
       });
-//edits
+      //edits
       return newState;
     });
-    setIsPromotion(false)
-    setPromotionColor("")
-    setPromotionSquare("")
-  }
+    setIsPromotion(false);
+    setPromotionColor("");
+    setPromotionSquare("");
+  };
 
   const isSquareSeen = (coordinates, colorSeenBy, boardToCheck = boardData) => {
     const xCoordinate = coordinates[0];
@@ -886,6 +884,7 @@ function Board({ shouldReset, setShouldReset }) {
       !isSquareSeen([g8.xAxis, g8.yAxis], "white") &&
       !isSquareSeen([e8.xAxis, e8.yAxis], "white")
     ) {
+      // setHasBlackKingMoved(true)
       setBoardData((prevState) => {
         const newState = [...prevState];
 
@@ -915,6 +914,7 @@ function Board({ shouldReset, setShouldReset }) {
       !isSquareSeen([c8.xAxis, c8.yAxis], "white") &&
       !isSquareSeen([e8.xAxis, e8.yAxis], "white")
     ) {
+      // setHasBlackKingMoved(true);
       setBoardData((prevState) => {
         const newState = [...prevState];
 
@@ -1041,7 +1041,11 @@ function Board({ shouldReset, setShouldReset }) {
       setHasRookA8Moved(true);
     }
 
-    if (piece.includes("king-white") && newSquareName === "g1") {
+    if (
+      piece.includes("king-white") &&
+      newSquareName === "g1" &&
+      oldSquareCoordinates[0] === 5
+    ) {
       setBoardData((prevState) => {
         const newState = [...prevState];
 
@@ -1058,7 +1062,11 @@ function Board({ shouldReset, setShouldReset }) {
       });
     }
 
-    if (piece.includes("king-white") && newSquareName === "c1") {
+    if (
+      piece.includes("king-white") &&
+      newSquareName === "c1" &&
+      oldSquareCoordinates[0] === 5
+    ) {
       setBoardData((prevState) => {
         const newState = [...prevState];
 
@@ -1075,7 +1083,11 @@ function Board({ shouldReset, setShouldReset }) {
       });
     }
 
-    if (piece.includes("king-black") && newSquareName === "g8") {
+    if (
+      piece.includes("king-black") &&
+      newSquareName === "g8" &&
+      oldSquareCoordinates[0] === 5
+    ) {
       setBoardData((prevState) => {
         const newState = [...prevState];
 
@@ -1092,7 +1104,11 @@ function Board({ shouldReset, setShouldReset }) {
       });
     }
 
-    if (piece.includes("king-black") && newSquareName === "c8") {
+    if (
+      piece.includes("king-black") &&
+      newSquareName === "c8" &&
+      oldSquareCoordinates[0] === 5
+    ) {
       setBoardData((prevState) => {
         const newState = [...prevState];
 
@@ -1221,7 +1237,7 @@ function Board({ shouldReset, setShouldReset }) {
         squareData.squareName,
         selectedSquare.coordinates
       );
-    } else if(!isPromotion) {
+    } else if (!isPromotion) {
       setSelectedSquare({ piece, coordinates });
       // window.addEventListener("mouseup", handleMouseUp);
     }
@@ -1251,7 +1267,11 @@ function Board({ shouldReset, setShouldReset }) {
   return (
     <>
       <div className="board">
-        <PromotionSelector isOpen={isPromotion} color={promotionColor} handlePromotion={handlePromotion} />
+        <PromotionSelector
+          isOpen={isPromotion}
+          color={promotionColor}
+          handlePromotion={handlePromotion}
+        />
         <Pieces boardData={boardData} />
         <BoardBackground boardData={boardData} />
       </div>

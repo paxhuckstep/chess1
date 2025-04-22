@@ -1,12 +1,8 @@
 import "./PromotionSelector.css";
 function PromotionSelector({ isOpen, color, handlePromotion }) {
-  //   console.log("isOpen: ", xisOpen);
-  //   console.log("xcolor: ".xcolor);
-  //   const isOpen = false;
   if (!isOpen) {
     return null;
   }
-  //   const color = "black";
   if (color === "white") {
     return (
       <>

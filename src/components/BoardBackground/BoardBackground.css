@@ -11,6 +11,7 @@
   padding: 5px;
   color: rgb(172, 175, 139);
   font-size: 1.5rem;
+  position: relative;
 }
 .board-background__square_light {
   background-color: rgb(245, 228, 182);
@@ -18,9 +19,29 @@
 .board-background__square_dark {
   background-color: rgb(80, 64, 19);
 }
-.board-background__square_legal {
+/* .board-background__square_legal {
   background-color: lightgreen;
 }
 .board-background__square_maybe-legal {
   background-color: pink;
+}
+.board-background__square_light.board-background__square_legal {
+  background-color: rgba(144, 238, 144, 0.8); 
+}
+
+.board-background__square_dark.board-background__square_legal {
+  background-color: rgba(0, 128, 0, 0.8); 
+} */
+
+.board-background__square_legal::after {
+  content: "";
+  right: 20px;
+  bottom: 20px;
+  width: 60px;
+  height: 60px;
+  background-color: rgba(128, 128, 128, 0.5); /* semi-transparent grey */
+  border-radius: 50%; /* makes it circular */
+  position: absolute;
+  z-index: 600;
+  pointer-events: none;
 }

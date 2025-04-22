@@ -20,6 +20,10 @@
   background-repeat: no-repeat;
 }
 
+.selector__button:hover {
+  cursor: pointer;
+}
+
 .selector__button_queen-white {
   background-image: url("../../assets/whiteQueen.png");
 }
