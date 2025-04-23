@@ -942,15 +942,100 @@ function Board({ shouldReset, setShouldReset }) {
     });
   };
 
+  // const handleLegalMoves = () => {
+  //   handleNoLegalMoves();
+  //   if (
+  //     (selectedSquare.piece.includes("white") && isWhiteTurn) ||
+  //     (selectedSquare.piece.includes("black") && !isWhiteTurn)
+  //   ) {
+  //     if (selectedSquare.piece.includes("king")) {
+  //       handlePossibleLegalKingMoves(selectedSquare.coordinates);
+  //       if (selectedSquare.piece.includes("white")) {
+  //         handleKingObstacles("white");
+  //         if (!(hasWhiteKingMoved || hasRookH1Moved)) {
+  //           handleWhiteShortCastle();
+  //         }
+  //         if (!(hasWhiteKingMoved || hasRookA1Moved)) {
+  //           handleWhiteLongCastle();
+  //         }
+  //       } else {
+  //         handleKingObstacles("black");
+  //         if (!(hasBlackKingMoved || hasRookH8Moved)) {
+  //           handleBlackShortCastle();
+  //         }
+  //         if (!(hasBlackKingMoved || hasRookA8Moved)) {
+  //           handleBlackLongCastle();
+  //         }
+  //       }
+  //     }
+  //     if (selectedSquare.piece.includes("rook")) {
+  //       handlePossibleLegalRookMoves(selectedSquare.coordinates);
+  //       if (selectedSquare.piece.includes("white")) {
+  //         handleRookObstacles(selectedSquare.coordinates, "white");
+  //       } else {
+  //         handleRookObstacles(selectedSquare.coordinates, "black");
+  //       }
+  //     }
+  //     if (selectedSquare.piece.includes("bishop")) {
+  //       handlePossibleLegalBishopMoves(selectedSquare.coordinates);
+  //       if (selectedSquare.piece.includes("white")) {
+  //         handleBishopObstacles(selectedSquare.coordinates, "white");
+  //       } else {
+  //         handleBishopObstacles(selectedSquare.coordinates, "black");
+  //       }
+  //     }
+  //     if (selectedSquare.piece.includes("queen")) {
+  //       handlePossibleLegalQueenMoves(selectedSquare.coordinates);
+  //       if (selectedSquare.piece.includes("white")) {
+  //         handleQueenObstacles(selectedSquare.coordinates, "white");
+  //       } else {
+  //         handleQueenObstacles(selectedSquare.coordinates, "black");
+  //       }
+  //     }
+  //     if (selectedSquare.piece.includes("knight")) {
+  //       handlePossibleLegalKnightMoves(selectedSquare.coordinates);
+  //       if (selectedSquare.piece.includes("white")) {
+  //         handleKnightObstacles("white");
+  //       } else {
+  //         handleKnightObstacles("black");
+  //       }
+  //     }
+  //     if (selectedSquare.piece.includes("pawn-white")) {
+  //       handlePossibleLegalWhitePawnMoves(selectedSquare.coordinates);
+  //       handleWhitePawnObstacles(selectedSquare.coordinates);
+  //     }
+  //     if (selectedSquare.piece.includes("pawn-black")) {
+  //       handlePossibleLegalBlackPawnMoves(selectedSquare.coordinates);
+  //       handleBlackPawnObstacles(selectedSquare.coordinates);
+  //     }
+  //     if (selectedSquare.piece.includes("white")) {
+  //       handleIsPinnedToKing(selectedSquare.coordinates, "white");
+  //     } else {
+  //       handleIsPinnedToKing(selectedSquare.coordinates, "black");
+  //     }
+  //     if (selectedSquare.piece.includes("white")) {
+  //       handleIsChecked("white");
+  //     } else {
+  //       handleIsChecked("black");
+  //     }
+  //   }
+  // };
+
   const handleLegalMoves = () => {
     handleNoLegalMoves();
+
+    // Check if it's the correct turn
     if (
       (selectedSquare.piece.includes("white") && isWhiteTurn) ||
       (selectedSquare.piece.includes("black") && !isWhiteTurn)
     ) {
+      // Determine piece color once
+      const isWhitePiece = selectedSquare.piece.includes("white");
+
+      // Handle piece-specific moves
       if (selectedSquare.piece.includes("king")) {
         handlePossibleLegalKingMoves(selectedSquare.coordinates);
-        if (selectedSquare.piece.includes("white")) {
+        if (isWhitePiece) {
           handleKingObstacles("white");
           if (!(hasWhiteKingMoved || hasRookH1Moved)) {
             handleWhiteShortCastle();
@@ -967,59 +1052,44 @@ function Board({ shouldReset, setShouldReset }) {
             handleBlackLongCastle();
           }
         }
-      }
-      if (selectedSquare.piece.includes("rook")) {
+      } else if (selectedSquare.piece.includes("rook")) {
         handlePossibleLegalRookMoves(selectedSquare.coordinates);
-        if (selectedSquare.piece.includes("white")) {
-          handleRookObstacles(selectedSquare.coordinates, "white");
-        } else {
-          handleRookObstacles(selectedSquare.coordinates, "black");
-        }
-      }
-      if (selectedSquare.piece.includes("bishop")) {
+        handleRookObstacles(
+          selectedSquare.coordinates,
+          isWhitePiece ? "white" : "black"
+        );
+      } else if (selectedSquare.piece.includes("bishop")) {
         handlePossibleLegalBishopMoves(selectedSquare.coordinates);
-        if (selectedSquare.piece.includes("white")) {
-          handleBishopObstacles(selectedSquare.coordinates, "white");
-        } else {
-          handleBishopObstacles(selectedSquare.coordinates, "black");
-        }
-      }
-      if (selectedSquare.piece.includes("queen")) {
+        handleBishopObstacles(
+          selectedSquare.coordinates,
+          isWhitePiece ? "white" : "black"
+        );
+      } else if (selectedSquare.piece.includes("queen")) {
         handlePossibleLegalQueenMoves(selectedSquare.coordinates);
-        if (selectedSquare.piece.includes("white")) {
-          handleQueenObstacles(selectedSquare.coordinates, "white");
-        } else {
-          handleQueenObstacles(selectedSquare.coordinates, "black");
-        }
-      }
-      if (selectedSquare.piece.includes("knight")) {
+        handleQueenObstacles(
+          selectedSquare.coordinates,
+          isWhitePiece ? "white" : "black"
+        );
+      } else if (selectedSquare.piece.includes("knight")) {
         handlePossibleLegalKnightMoves(selectedSquare.coordinates);
-        if (selectedSquare.piece.includes("white")) {
-          handleKnightObstacles("white");
+        handleKnightObstacles(isWhitePiece ? "white" : "black");
+      } else if (selectedSquare.piece.includes("pawn")) {
+        if (isWhitePiece) {
+          handlePossibleLegalWhitePawnMoves(selectedSquare.coordinates);
+          handleWhitePawnObstacles(selectedSquare.coordinates);
         } else {
-          handleKnightObstacles("black");
+          handlePossibleLegalBlackPawnMoves(selectedSquare.coordinates);
+          handleBlackPawnObstacles(selectedSquare.coordinates);
         }
       }
-      if (selectedSquare.piece.includes("pawn-white")) {
-        handlePossibleLegalWhitePawnMoves(selectedSquare.coordinates);
-        handleWhitePawnObstacles(selectedSquare.coordinates);
-      }
-      if (selectedSquare.piece.includes("pawn-black")) {
-        handlePossibleLegalBlackPawnMoves(selectedSquare.coordinates);
-        handleBlackPawnObstacles(selectedSquare.coordinates);
-      }
-      if (selectedSquare.piece.includes("white")) {
-        handleIsPinnedToKing(selectedSquare.coordinates, "white");
-      } else {
-        handleIsPinnedToKing(selectedSquare.coordinates, "black");
-      }
-      if (selectedSquare.piece.includes("white")) {
-        handleIsChecked("white");
-      } else {
-        handleIsChecked("black");
-      }
+      handleIsPinnedToKing(
+        selectedSquare.coordinates,
+        isWhitePiece ? "white" : "black"
+      );
+      handleIsChecked(isWhitePiece ? "white" : "black");
     }
   };
+
   const movePiece = (piece, newSquareName, oldSquareCoordinates) => {
     // console.log("moved piece: ", piece, oldSquareCoordinates);
     if (piece.includes("king-white")) {
