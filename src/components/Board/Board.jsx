@@ -26,7 +26,7 @@ function Board({ shouldReset, setShouldReset }) {
   const [promotionSquare, setPromotionSquare] = useState("");
 
   const resetBoard = () => {
-    console.log("reset board fired");
+    // console.log("reset board fired");
     const freshBoardData = structuredClone(startingBoardData);
     setBoardData(freshBoardData);
     setSelectedSquare({
