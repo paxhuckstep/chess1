@@ -1196,51 +1196,58 @@ function Board({ shouldReset, setShouldReset }) {
         // console.log("Checking piece:", square.piece);
         otherX = square.xAxis;
         otherY = square.yAxis;
-
-        try {
-          if (square.piece.includes("king")) {
-            // console.log('Handling king moves');
-            handlePossibleLegalKingMoves();
-            handleKingObstacles(square.xAxis, square.yAxis);
-          }
-          if (square.piece.includes("queen")) {
-            // console.log('Handling queen moves');
-            handlePossibleLegalQueenMoves();
-            handleQueenObstacles();
-          }
-          if (square.piece.includes("rook")) {
-            // console.log('Handling rook moves');
-            handlePossibleLegalRookMoves();
-            handleRookObstacles();
-          }
-          if (square.piece.includes("knight")) {
-            // console.log('Handling knight moves');
-            handlePossibleLegalKnightMoves();
-            handleKnightObstacles();
-          }
-          if (square.piece.includes("bishop")) {
-            // console.log('Handling bishop moves');
-            handlePossibleLegalBishopMoves();
-            handleBishopObstacles();
-          }
-          if (square.piece.includes("pawn-white")) {
-            // console.log('Handling white pawn moves');
-            handlePossibleLegalWhitePawnMoves();
-            handleWhitePawnObstacles();
-          }
-          if (square.piece.includes("pawn-black")) {
-            // console.log('Handling black pawn moves');
-            handlePossibleLegalBlackPawnMoves();
-            handleBlackPawnObstacles();
-          }
-          handleIsPinnedToKing();
-          handleBlockChecks();
-          // ... rest of the piece checks ...
-          if (boardData.some((square) => square.isLegal)) {
-            hasAnyLegalMoves = true;
-          }
-        } catch (error) {
-          console.error("Error processing piece:", square.piece, error);
+        if (square.piece.includes("king")) {
+          console.log("Handling king moves on ", otherX, otherY);
+          handlePossibleLegalKingMoves();
+          handleKingObstacles(square.xAxis, square.yAxis);
+        }
+        if (square.piece.includes("queen")) {
+          console.log("Handling queen moves on ", otherX, otherY);
+          handlePossibleLegalQueenMoves();
+          handleQueenObstacles();
+        }
+        if (square.piece.includes("rook")) {
+          console.log("Handling rook moves on ", otherX, otherY);
+          handlePossibleLegalRookMoves();
+          handleRookObstacles();
+        }
+        if (square.piece.includes("knight")) {
+          console.log("Handling knight moves on ", otherX, otherY);
+          handlePossibleLegalKnightMoves();
+          handleKnightObstacles();
+        }
+        if (square.piece.includes("bishop")) {
+          console.log("Handling bishop moves on ", otherX, otherY);
+          handlePossibleLegalBishopMoves();
+          handleBishopObstacles();
+        }
+        if (square.piece.includes("pawn-white")) {
+          console.log("Handling white pawn moves on ", otherX, otherY);
+          handlePossibleLegalWhitePawnMoves();
+          handleWhitePawnObstacles();
+        }
+        if (square.piece.includes("pawn-black")) {
+          console.log("Handling black pawn moves on ", otherX, otherY);
+          handlePossibleLegalBlackPawnMoves();
+          handleBlackPawnObstacles();
+        }
+        handleIsPinnedToKing();
+        handleBlockChecks();
+        // console.log(boardData);
+        // ... rest of the piece checks ...
+        const legalSquares = boardData.filter((square) => {
+          square.isLegal;
+        });
+        // console.log(square.piece, " has legal moves on ", legalSquares)
+        if (
+          boardData.some((square) => {
+            return square.isLegal;
+          })
+        ) {
+          hasAnyLegalMoves = true;
+          console.log(".SOME IS TRUE ",square.piece, " has legal moves on ", otherX, otherY)
+        } else {
+          console.log(".SOME IS FALSE ", square.piece, " has no legal moves on ", otherX, otherY)
         }
       }
     });
@@ -1267,7 +1274,12 @@ function Board({ shouldReset, setShouldReset }) {
   };
 
   useEffect(() => {
-    console.log("isNoLegalMoves: ", isNoLegalMoves(), " isInCheck: ", isInCheck());
+    console.log(
+      "isNoLegalMoves: ",
+      isNoLegalMoves(),
+      " isInCheck: ",
+      isInCheck()
+    );
   }, [isWhiteTurn]);
 
   const handleLegalMoves = () => {
