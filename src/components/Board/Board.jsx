@@ -32,8 +32,8 @@ function Board({ shouldReset, setShouldReset }) {
   let otherX = null;
   let otherY = null;
 
-  const pieceCoordinateX = isForReal ? selectedSquare.coordinates[0] : otherX;
-  const pieceCoordinateY = isForReal ? selectedSquare.coordinates[1] : otherY;
+  const getPieceCoordinateX = () => isForReal ? selectedSquare.coordinates[0] : otherX;
+  const getPieceCoordinateY = () => isForReal ? selectedSquare.coordinates[1] : otherY;
 
   const resetBoard = () => {
     // resets for a new game to start
@@ -60,18 +60,18 @@ function Board({ shouldReset, setShouldReset }) {
 
       newState.forEach((square) => {
         if (
-          (square.xAxis === pieceCoordinateX + 2 &&
-            (square.yAxis === pieceCoordinateY + 1 ||
-              square.yAxis === pieceCoordinateY - 1)) ||
-          (square.xAxis === pieceCoordinateX - 2 &&
-            (square.yAxis === pieceCoordinateY + 1 ||
-              square.yAxis === pieceCoordinateY - 1)) ||
-          (square.yAxis === pieceCoordinateY + 2 &&
-            (square.xAxis === pieceCoordinateX + 1 ||
-              square.xAxis === pieceCoordinateX - 1)) ||
-          (square.yAxis === pieceCoordinateY - 2 &&
-            (square.xAxis === pieceCoordinateX + 1 ||
-              square.xAxis === pieceCoordinateX - 1))
+          (square.xAxis === getPieceCoordinateX() + 2 &&
+            (square.yAxis === getPieceCoordinateY() + 1 ||
+              square.yAxis === getPieceCoordinateY() - 1)) ||
+          (square.xAxis === getPieceCoordinateX() - 2 &&
+            (square.yAxis === getPieceCoordinateY() + 1 ||
+              square.yAxis === getPieceCoordinateY() - 1)) ||
+          (square.yAxis === getPieceCoordinateY() + 2 &&
+            (square.xAxis === getPieceCoordinateX() + 1 ||
+              square.xAxis === getPieceCoordinateX() - 1)) ||
+          (square.yAxis === getPieceCoordinateY() - 2 &&
+            (square.xAxis === getPieceCoordinateX() + 1 ||
+              square.xAxis === getPieceCoordinateX() - 1))
         ) {
           square.isLegal = true;
           square.isMaybeLegal = true; // isMaybeLegal doesn't do anything, just good for debugging during devolpement, will see throughout
@@ -105,15 +105,15 @@ function Board({ shouldReset, setShouldReset }) {
       newState.forEach((square) => {
         if (
           // finding all squars around the king, not king's current square.
-          (square.xAxis === pieceCoordinateX + 1 ||
-            square.xAxis === pieceCoordinateX ||
-            square.xAxis === pieceCoordinateX - 1) &&
-          (square.yAxis === pieceCoordinateY + 1 ||
-            square.yAxis === pieceCoordinateY ||
-            square.yAxis === pieceCoordinateY - 1) &&
+          (square.xAxis === getPieceCoordinateX() + 1 ||
+            square.xAxis === getPieceCoordinateX() ||
+            square.xAxis === getPieceCoordinateX() - 1) &&
+          (square.yAxis === getPieceCoordinateY() + 1 ||
+            square.yAxis === getPieceCoordinateY() ||
+            square.yAxis === getPieceCoordinateY() - 1) &&
           !(
-            square.xAxis === pieceCoordinateX &&
-            square.yAxis === pieceCoordinateY
+            square.xAxis === getPieceCoordinateX() &&
+            square.yAxis === getPieceCoordinateY()
           )
         ) {
           square.isLegal = true;
@@ -361,23 +361,24 @@ function Board({ shouldReset, setShouldReset }) {
   };
 
   const handlePossibleLegalRookMoves = () => {
+    console.log("getPieceCoordinateX(): ", getPieceCoordinateX(), " getPieceCoordinateY(): ", getPieceCoordinateY())
     setBoardData((prevState) => {
       const newState = [...prevState];
 
       newState.forEach((square) => {
         if (
-          (square.xAxis === pieceCoordinateX ||
-            square.yAxis === pieceCoordinateY) &&
+          (square.xAxis === getPieceCoordinateX() ||
+            square.yAxis === getPieceCoordinateY()) &&
           !(
-            square.xAxis === pieceCoordinateX &&
-            square.yAxis === pieceCoordinateY
+            square.xAxis === getPieceCoordinateX() &&
+            square.yAxis === getPieceCoordinateY()
           )
         ) {
           square.isLegal = true;
           square.isMaybeLegal = true;
         }
       });
-
+      console.log("Rook PossibleLegal newState: ", newState)
       return newState;
     });
   };
@@ -393,19 +394,19 @@ function Board({ shouldReset, setShouldReset }) {
       newState.forEach((square) => {
         if (square.isLegal && square.piece.includes("piece__")) {
           // these fill with all the position of all pieces on the same straight line paths as the rook
-          if (square.xAxis === pieceCoordinateX) {
-            if (square.yAxis > pieceCoordinateY) {
+          if (square.xAxis === getPieceCoordinateX()) {
+            if (square.yAxis > getPieceCoordinateY()) {
               yUpBlocks.push(square.yAxis);
             }
-            if (square.yAxis < pieceCoordinateY) {
+            if (square.yAxis < getPieceCoordinateY()) {
               yDownBlocks.push(square.yAxis);
             }
           }
-          if (square.yAxis === pieceCoordinateY) {
-            if (square.xAxis > pieceCoordinateX) {
+          if (square.yAxis === getPieceCoordinateY()) {
+            if (square.xAxis > getPieceCoordinateX()) {
               xRightBlocks.push(square.xAxis);
             }
-            if (square.xAxis < pieceCoordinateX) {
+            if (square.xAxis < getPieceCoordinateX()) {
               xLeftBlocks.push(square.xAxis);
             }
           }
@@ -416,13 +417,13 @@ function Board({ shouldReset, setShouldReset }) {
         // this makes sure the rook doesn't move past the closest piece in each direction
         if (
           (square.xAxis < Math.max(...xLeftBlocks) &&
-            square.yAxis === pieceCoordinateY) ||
+            square.yAxis === getPieceCoordinateY()) ||
           (square.xAxis > Math.min(...xRightBlocks) &&
-            square.yAxis === pieceCoordinateY) ||
+            square.yAxis === getPieceCoordinateY()) ||
           (square.yAxis > Math.min(...yUpBlocks) &&
-            square.xAxis === pieceCoordinateX) ||
+            square.xAxis === getPieceCoordinateX()) ||
           (square.yAxis < Math.max(...yDownBlocks) &&
-            square.xAxis === pieceCoordinateX)
+            square.xAxis === getPieceCoordinateX())
         ) {
           square.isLegal = false;
         }
@@ -441,14 +442,14 @@ function Board({ shouldReset, setShouldReset }) {
         for (let i = 1; i < 8; i++) {
           // fill the diagonals with legal
           if (
-            (square.xAxis === pieceCoordinateX + i &&
-              square.yAxis === pieceCoordinateY + i) ||
-            (square.xAxis === pieceCoordinateX - i &&
-              square.yAxis === pieceCoordinateY + i) ||
-            (square.xAxis === pieceCoordinateX + i &&
-              square.yAxis === pieceCoordinateY - i) ||
-            (square.xAxis === pieceCoordinateX - i &&
-              square.yAxis === pieceCoordinateY - i)
+            (square.xAxis === getPieceCoordinateX() + i &&
+              square.yAxis === getPieceCoordinateY() + i) ||
+            (square.xAxis === getPieceCoordinateX() - i &&
+              square.yAxis === getPieceCoordinateY() + i) ||
+            (square.xAxis === getPieceCoordinateX() + i &&
+              square.yAxis === getPieceCoordinateY() - i) ||
+            (square.xAxis === getPieceCoordinateX() - i &&
+              square.yAxis === getPieceCoordinateY() - i)
           ) {
             square.isLegal = true;
             square.isMaybeLegal = true;
@@ -472,26 +473,26 @@ function Board({ shouldReset, setShouldReset }) {
         // finds obstacles like rooks, but now on diagonals instead of straight line paths
         if (square.isLegal && square.piece.includes("piece__")) {
           if (
-            square.xAxis < pieceCoordinateX &&
-            square.yAxis > pieceCoordinateY
+            square.xAxis < getPieceCoordinateX() &&
+            square.yAxis > getPieceCoordinateY()
           ) {
             upLeftBlocks.push(square.xAxis);
           }
           if (
-            square.xAxis > pieceCoordinateX &&
-            square.yAxis > pieceCoordinateY
+            square.xAxis > getPieceCoordinateX() &&
+            square.yAxis > getPieceCoordinateY()
           ) {
             upRightBlocks.push(square.xAxis);
           }
           if (
-            square.xAxis < pieceCoordinateX &&
-            square.yAxis < pieceCoordinateY
+            square.xAxis < getPieceCoordinateX() &&
+            square.yAxis < getPieceCoordinateY()
           ) {
             downLeftBlocks.push(square.xAxis);
           }
           if (
-            square.xAxis > pieceCoordinateX &&
-            square.yAxis < pieceCoordinateY
+            square.xAxis > getPieceCoordinateX() &&
+            square.yAxis < getPieceCoordinateY()
           ) {
             downRightBlocks.push(square.xAxis);
           }
@@ -502,13 +503,13 @@ function Board({ shouldReset, setShouldReset }) {
         // don't move past closest piece on each diagonal, closest piece being the same color is handled with handleKnightObstacles
         if (
           (square.xAxis < Math.max(...upLeftBlocks) &&
-            square.yAxis > pieceCoordinateY) ||
+            square.yAxis > getPieceCoordinateY()) ||
           (square.xAxis > Math.min(...upRightBlocks) &&
-            square.yAxis > pieceCoordinateY) ||
+            square.yAxis > getPieceCoordinateY()) ||
           (square.xAxis < Math.max(...downLeftBlocks) &&
-            square.yAxis < pieceCoordinateY) ||
+            square.yAxis < getPieceCoordinateY()) ||
           (square.xAxis > Math.min(...downRightBlocks) &&
-            square.yAxis < pieceCoordinateY)
+            square.yAxis < getPieceCoordinateY())
         ) {
           square.isLegal = false;
         }
@@ -538,15 +539,15 @@ function Board({ shouldReset, setShouldReset }) {
 
       newState.forEach((square) => {
         if (
-          (pieceCoordinateY + 1 === square.yAxis &&
-            pieceCoordinateX === square.xAxis) ||
-          (pieceCoordinateY === 2 && // only adds double just as possible legal if on y == 2
-            pieceCoordinateY + 2 === square.yAxis &&
-            pieceCoordinateX === square.xAxis) ||
-          (pieceCoordinateY + 1 === square.yAxis &&
-            pieceCoordinateX - 1 === square.xAxis) ||
-          (pieceCoordinateY + 1 === square.yAxis &&
-            pieceCoordinateX + 1 === square.xAxis) // always adds diagonal captures as possible legal
+          (getPieceCoordinateY() + 1 === square.yAxis &&
+            getPieceCoordinateX() === square.xAxis) ||
+          (getPieceCoordinateY() === 2 && // only adds double just as possible legal if on y == 2
+            getPieceCoordinateY() + 2 === square.yAxis &&
+            getPieceCoordinateX() === square.xAxis) ||
+          (getPieceCoordinateY() + 1 === square.yAxis &&
+            getPieceCoordinateX() - 1 === square.xAxis) ||
+          (getPieceCoordinateY() + 1 === square.yAxis &&
+            getPieceCoordinateX() + 1 === square.xAxis) // always adds diagonal captures as possible legal
         ) {
           square.isLegal = true;
           square.isMaybeLegal = true;
@@ -565,7 +566,7 @@ function Board({ shouldReset, setShouldReset }) {
 
       newState.forEach((square) => {
         if (
-          square.xAxis === pieceCoordinateX &&
+          square.xAxis === getPieceCoordinateX() &&
           square.piece.includes("piece__") &&
           square.yAxis === 3
         ) {
@@ -577,26 +578,26 @@ function Board({ shouldReset, setShouldReset }) {
         if (
           ((!(
             (
-              (square.xAxis === pieceCoordinateX - 1 ||
-                square.xAxis === pieceCoordinateX + 1) &&
-              square.yAxis === pieceCoordinateY + 1 &&
+              (square.xAxis === getPieceCoordinateX() - 1 ||
+                square.xAxis === getPieceCoordinateX() + 1) &&
+              square.yAxis === getPieceCoordinateY() + 1 &&
               square.piece.includes("black")
             ) // checks for diagonal black pieces ina not to keep diagonal captures if possible
           ) &&
-            square.xAxis !== pieceCoordinateX) ||
-            ((square.yAxis === pieceCoordinateY + 1 ||
-              square.yAxis === pieceCoordinateY + 2) &&
-              square.xAxis === pieceCoordinateX &&
+            square.xAxis !== getPieceCoordinateX()) ||
+            ((square.yAxis === getPieceCoordinateY() + 1 ||
+              square.yAxis === getPieceCoordinateY() + 2) &&
+              square.xAxis === getPieceCoordinateX() &&
               square.piece.includes("piece__")) ||
             (square.yAxis === 4 &&
               isDoubleJumpedBlocked && //prevents jumping over pieces during double jump
-              pieceCoordinateY === 2)) &&
+              getPieceCoordinateY() === 2)) &&
           !(
             !isNaN(whiteEnPessant) && //whiteEnPessant is assigned the column's x axis value (a number) when a black pawn double jumps
             square.yAxis === 6 &&
             square.xAxis === whiteEnPessant && // a string wouldn't satisfy this condition either, so !isNaN(whiteEnPessant) isn't technically needed
-            (pieceCoordinateX === whiteEnPessant + 1 ||
-              pieceCoordinateX === whiteEnPessant - 1)
+            (getPieceCoordinateX() === whiteEnPessant + 1 ||
+              getPieceCoordinateX() === whiteEnPessant - 1)
           )
         ) {
           square.isLegal = false;
@@ -614,15 +615,15 @@ function Board({ shouldReset, setShouldReset }) {
 
       newState.forEach((square) => {
         if (
-          (pieceCoordinateY - 1 === square.yAxis &&
-            pieceCoordinateX === square.xAxis) ||
-          (pieceCoordinateY === 7 &&
-            pieceCoordinateY - 2 === square.yAxis &&
-            pieceCoordinateX === square.xAxis) ||
-          (pieceCoordinateY - 1 === square.yAxis &&
-            pieceCoordinateX - 1 === square.xAxis) ||
-          (pieceCoordinateY - 1 === square.yAxis &&
-            pieceCoordinateX + 1 === square.xAxis)
+          (getPieceCoordinateY() - 1 === square.yAxis &&
+            getPieceCoordinateX() === square.xAxis) ||
+          (getPieceCoordinateY() === 7 &&
+            getPieceCoordinateY() - 2 === square.yAxis &&
+            getPieceCoordinateX() === square.xAxis) ||
+          (getPieceCoordinateY() - 1 === square.yAxis &&
+            getPieceCoordinateX() - 1 === square.xAxis) ||
+          (getPieceCoordinateY() - 1 === square.yAxis &&
+            getPieceCoordinateX() + 1 === square.xAxis)
         ) {
           square.isLegal = true;
           square.isMaybeLegal = true;
@@ -641,7 +642,7 @@ function Board({ shouldReset, setShouldReset }) {
 
       newState.forEach((square) => {
         if (
-          square.xAxis === pieceCoordinateX &&
+          square.xAxis === getPieceCoordinateX() &&
           square.piece.includes("piece__") &&
           square.yAxis === 6
         ) {
@@ -652,25 +653,25 @@ function Board({ shouldReset, setShouldReset }) {
       newState.forEach((square) => {
         if (
           ((!(
-            (square.xAxis === pieceCoordinateX - 1 ||
-              square.xAxis === pieceCoordinateX + 1) &&
-            square.yAxis === pieceCoordinateY - 1 &&
+            (square.xAxis === getPieceCoordinateX() - 1 ||
+              square.xAxis === getPieceCoordinateX() + 1) &&
+            square.yAxis === getPieceCoordinateY() - 1 &&
             square.piece.includes("white")
           ) &&
-            square.xAxis !== pieceCoordinateX) ||
-            ((square.yAxis === pieceCoordinateY - 1 ||
-              square.yAxis === pieceCoordinateY - 2) &&
-              square.xAxis === pieceCoordinateX &&
+            square.xAxis !== getPieceCoordinateX()) ||
+            ((square.yAxis === getPieceCoordinateY() - 1 ||
+              square.yAxis === getPieceCoordinateY() - 2) &&
+              square.xAxis === getPieceCoordinateX() &&
               square.piece.includes("piece__")) ||
             (square.yAxis === 5 &&
               isDoubleJumpedBlocked &&
-              pieceCoordinateY === 7)) &&
+              getPieceCoordinateY() === 7)) &&
           !(
             !isNaN(blackEnPessant) &&
             square.yAxis === 3 &&
             square.xAxis === blackEnPessant &&
-            (pieceCoordinateX === blackEnPessant + 1 ||
-              pieceCoordinateX === blackEnPessant - 1)
+            (getPieceCoordinateX() === blackEnPessant + 1 ||
+              getPieceCoordinateX() === blackEnPessant - 1)
           )
         ) {
           square.isLegal = false;
@@ -836,17 +837,17 @@ function Board({ shouldReset, setShouldReset }) {
 
     boardData.forEach((square) => {
       if (square.piece.includes("piece__")) {
-        if (square.xAxis === pieceCoordinateX) {
-          if (square.yAxis > pieceCoordinateY) yUpBlocks.push(square.yAxis);
-          if (square.yAxis < pieceCoordinateY) yDownBlocks.push(square.yAxis);
+        if (square.xAxis === getPieceCoordinateX()) {
+          if (square.yAxis > getPieceCoordinateY()) yUpBlocks.push(square.yAxis);
+          if (square.yAxis < getPieceCoordinateY()) yDownBlocks.push(square.yAxis);
         }
-        if (square.yAxis === pieceCoordinateY) {
-          if (square.xAxis > pieceCoordinateX) xRightBlocks.push(square.xAxis);
-          if (square.xAxis < pieceCoordinateX) xLeftBlocks.push(square.xAxis);
+        if (square.yAxis === getPieceCoordinateY()) {
+          if (square.xAxis > getPieceCoordinateX()) xRightBlocks.push(square.xAxis);
+          if (square.xAxis < getPieceCoordinateX()) xLeftBlocks.push(square.xAxis);
         }
 
-        const xDiff = square.xAxis - pieceCoordinateX;
-        const yDiff = square.yAxis - pieceCoordinateY;
+        const xDiff = square.xAxis - getPieceCoordinateX();
+        const yDiff = square.yAxis - getPieceCoordinateY();
         if (Math.abs(xDiff) === Math.abs(yDiff)) {
           if (xDiff > 0 && yDiff > 0) upRightBlocks.push(square.xAxis);
           if (xDiff < 0 && yDiff > 0) upLeftBlocks.push(square.xAxis);
@@ -863,18 +864,18 @@ function Board({ shouldReset, setShouldReset }) {
             (square.piece.includes("queen") &&
               square.piece.includes(otherColor))) &&
           ((square.yAxis === Math.min(...yUpBlocks) &&
-            square.xAxis === pieceCoordinateX) ||
+            square.xAxis === getPieceCoordinateX()) ||
             (square.yAxis === Math.max(...yDownBlocks) &&
-              square.xAxis === pieceCoordinateX))
+              square.xAxis === getPieceCoordinateX()))
       ) &&
       boardData.some(
         (square) =>
           square.piece.includes("king") &&
           square.piece.includes(thisPieceColor) &&
           ((square.yAxis === Math.min(...yUpBlocks) &&
-            square.xAxis === pieceCoordinateX) ||
+            square.xAxis === getPieceCoordinateX()) ||
             (square.yAxis === Math.max(...yDownBlocks) &&
-              square.xAxis === pieceCoordinateX))
+              square.xAxis === getPieceCoordinateX()))
       );
 
     const isHorizontalPinned =
@@ -883,73 +884,73 @@ function Board({ shouldReset, setShouldReset }) {
           (square.piece.includes("rook") || square.piece.includes("queen")) &&
           square.piece.includes(otherColor) &&
           ((square.xAxis === Math.max(...xLeftBlocks) &&
-            square.yAxis === pieceCoordinateY) ||
+            square.yAxis === getPieceCoordinateY()) ||
             (square.xAxis === Math.min(...xRightBlocks) &&
-              square.yAxis === pieceCoordinateY))
+              square.yAxis === getPieceCoordinateY()))
       ) &&
       boardData.some(
         (square) =>
           square.piece.includes("king") &&
           square.piece.includes(thisPieceColor) &&
           ((square.xAxis === Math.max(...xLeftBlocks) &&
-            square.yAxis === pieceCoordinateY) ||
+            square.yAxis === getPieceCoordinateY()) ||
             (square.xAxis === Math.min(...xRightBlocks) &&
-              square.yAxis === pieceCoordinateY))
+              square.yAxis === getPieceCoordinateY()))
       );
 
     const isUpRightDiagonalPinned =
       boardData.some((square) => {
-        const xDiff = square.xAxis - pieceCoordinateX;
-        const yDiff = square.yAxis - pieceCoordinateY;
+        const xDiff = square.xAxis - getPieceCoordinateX();
+        const yDiff = square.yAxis - getPieceCoordinateY();
         return (
           Math.abs(xDiff) === Math.abs(yDiff) &&
           (square.piece.includes("bishop") || square.piece.includes("queen")) &&
           square.piece.includes(otherColor) &&
           ((square.xAxis === Math.min(...upRightBlocks) &&
-            square.yAxis > pieceCoordinateY) ||
+            square.yAxis > getPieceCoordinateY()) ||
             (square.xAxis === Math.max(...downLeftBlocks) &&
-              square.yAxis < pieceCoordinateY))
+              square.yAxis < getPieceCoordinateY()))
         );
       }) &&
       boardData.some((square) => {
-        const xDiff = square.xAxis - pieceCoordinateX;
-        const yDiff = square.yAxis - pieceCoordinateY;
+        const xDiff = square.xAxis - getPieceCoordinateX();
+        const yDiff = square.yAxis - getPieceCoordinateY();
         return (
           Math.abs(xDiff) === Math.abs(yDiff) &&
           square.piece.includes("king") &&
           square.piece.includes(thisPieceColor) &&
           ((square.xAxis === Math.min(...upRightBlocks) &&
-            square.yAxis > pieceCoordinateY) ||
+            square.yAxis > getPieceCoordinateY()) ||
             (square.xAxis === Math.max(...downLeftBlocks) &&
-              square.yAxis < pieceCoordinateY))
+              square.yAxis < getPieceCoordinateY()))
         );
       });
 
     const isUpLeftDiagonalPinned =
       boardData.some((square) => {
-        const xDiff = square.xAxis - pieceCoordinateX;
-        const yDiff = square.yAxis - pieceCoordinateY;
+        const xDiff = square.xAxis - getPieceCoordinateX();
+        const yDiff = square.yAxis - getPieceCoordinateY();
         return (
           Math.abs(xDiff) === Math.abs(yDiff) &&
           (square.piece.includes("bishop") || square.piece.includes("queen")) &&
           square.piece.includes(otherColor) &&
           ((square.xAxis === Math.max(...upLeftBlocks) &&
-            square.yAxis > pieceCoordinateY) ||
+            square.yAxis > getPieceCoordinateY()) ||
             (square.xAxis === Math.min(...downRightBlocks) &&
-              square.yAxis < pieceCoordinateY))
+              square.yAxis < getPieceCoordinateY()))
         );
       }) &&
       boardData.some((square) => {
-        const xDiff = square.xAxis - pieceCoordinateX;
-        const yDiff = square.yAxis - pieceCoordinateY;
+        const xDiff = square.xAxis - getPieceCoordinateX();
+        const yDiff = square.yAxis - getPieceCoordinateY();
         return (
           Math.abs(xDiff) === Math.abs(yDiff) &&
           square.piece.includes("king") &&
           square.piece.includes(thisPieceColor) &&
           ((square.xAxis === Math.max(...upLeftBlocks) &&
-            square.yAxis > pieceCoordinateY) ||
+            square.yAxis > getPieceCoordinateY()) ||
             (square.xAxis === Math.min(...downRightBlocks) &&
-              square.yAxis < pieceCoordinateY))
+              square.yAxis < getPieceCoordinateY()))
         );
       });
 
@@ -957,12 +958,12 @@ function Board({ shouldReset, setShouldReset }) {
       const newState = [...prevState];
 
       newState.forEach((square) => {
-        const xDiff = square.xAxis - pieceCoordinateX;
-        const yDiff = square.yAxis - pieceCoordinateY;
+        const xDiff = square.xAxis - getPieceCoordinateX();
+        const yDiff = square.yAxis - getPieceCoordinateY();
 
         if (
-          (isVerticalPinned && square.xAxis !== pieceCoordinateX) ||
-          (isHorizontalPinned && square.yAxis !== pieceCoordinateY) ||
+          (isVerticalPinned && square.xAxis !== getPieceCoordinateX()) ||
+          (isHorizontalPinned && square.yAxis !== getPieceCoordinateY()) ||
           (isUpRightDiagonalPinned &&
             ((!(xDiff > 0 && yDiff > 0) && !(xDiff < 0 && yDiff < 0)) ||
               !(Math.abs(xDiff) === Math.abs(yDiff)))) ||
@@ -1037,7 +1038,7 @@ function Board({ shouldReset, setShouldReset }) {
 
   //         if (square.piece.includes("king")) {
   //           handlePossibleLegalKingMoves();
-  //           handleKingObstacles(pieceCoordinateX, pieceCoordinateY);
+  //           handleKingObstacles(getPieceCoordinateX(), getPieceCoordinateY());
   //         }
   //         if (square.piece.includes("queen")) {
   //           handlePossibleLegalQueenMoves();
@@ -1207,9 +1208,10 @@ function Board({ shouldReset, setShouldReset }) {
           handleQueenObstacles();
         }
         if (square.piece.includes("rook")) {
-          console.log("Handling rook moves on ", otherX, otherY);
+          console.log("Handling rook moves on ", otherX, otherY, "isForReal: ", isForReal);
           handlePossibleLegalRookMoves();
           handleRookObstacles();
+          console.log("boardData, rook moves, isWhiteTurn?", isWhiteTurn, boardData)
         }
         if (square.piece.includes("knight")) {
           console.log("Handling knight moves on ", otherX, otherY);
