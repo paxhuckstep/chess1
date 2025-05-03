@@ -378,7 +378,7 @@ function Board({ shouldReset, setShouldReset }) {
           square.isMaybeLegal = true;
         }
       });
-      console.log("Rook PossibleLegal newState: ", newState)
+      // console.log("Rook PossibleLegal newState: ", newState)
       return newState;
     });
   };
@@ -1276,6 +1276,7 @@ function Board({ shouldReset, setShouldReset }) {
   };
 
   useEffect(() => {
+    makeAllSquaresIllegal()
     console.log(
       "isNoLegalMoves: ",
       isNoLegalMoves(),
