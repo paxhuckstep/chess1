@@ -19,6 +19,9 @@
 .board-background__square_dark {
   background-color: rgb(80, 64, 19);
 }
+/* ^^^^^^^^^^^^^^^^^^^^^^UNCOMMENT BELOW FOR .isMaybeLegal TO BE SEEN ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ^ */
+
+
 /* .board-background__square_legal {
   background-color: lightgreen;
 }
@@ -33,6 +36,10 @@
   background-color: rgba(0, 128, 0, 0.8); 
 } */
 
+
+/* ^^^^^^^^^^^^^^^^^^^^^^^UNCOMMENT ABOVE FOR .isMaybeLegal TO BE SEEN ^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
+
+/*^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^  */
 .board-background__square_legal::after {
   content: "";
   right: 20px;

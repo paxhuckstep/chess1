@@ -361,7 +361,7 @@ function Board({ shouldReset, setShouldReset }) {
   };
 
   const handlePossibleLegalRookMoves = () => {
-    console.log("getPieceCoordinateX(): ", getPieceCoordinateX(), " getPieceCoordinateY(): ", getPieceCoordinateY())
+    console.log("inside handlePossibleLegalRookMoves, getPieceCoordinateX(): ", getPieceCoordinateX(), " getPieceCoordinateY(): ", getPieceCoordinateY())
     setBoardData((prevState) => {
       const newState = [...prevState];
 
@@ -1198,12 +1198,12 @@ function Board({ shouldReset, setShouldReset }) {
         otherX = square.xAxis;
         otherY = square.yAxis;
         if (square.piece.includes("king")) {
-          console.log("Handling king moves on ", otherX, otherY);
+          // console.log("Handling king moves on ", otherX, otherY);
           handlePossibleLegalKingMoves();
           handleKingObstacles(square.xAxis, square.yAxis);
         }
         if (square.piece.includes("queen")) {
-          console.log("Handling queen moves on ", otherX, otherY);
+          // console.log("Handling queen moves on ", otherX, otherY);
           handlePossibleLegalQueenMoves();
           handleQueenObstacles();
         }
@@ -1214,22 +1214,22 @@ function Board({ shouldReset, setShouldReset }) {
           console.log("boardData, rook moves, isWhiteTurn?", isWhiteTurn, boardData)
         }
         if (square.piece.includes("knight")) {
-          console.log("Handling knight moves on ", otherX, otherY);
+          // console.log("Handling knight moves on ", otherX, otherY);
           handlePossibleLegalKnightMoves();
           handleKnightObstacles();
         }
         if (square.piece.includes("bishop")) {
-          console.log("Handling bishop moves on ", otherX, otherY);
+          // console.log("Handling bishop moves on ", otherX, otherY);
           handlePossibleLegalBishopMoves();
           handleBishopObstacles();
         }
         if (square.piece.includes("pawn-white")) {
-          console.log("Handling white pawn moves on ", otherX, otherY);
+          // console.log("Handling white pawn moves on ", otherX, otherY);
           handlePossibleLegalWhitePawnMoves();
           handleWhitePawnObstacles();
         }
         if (square.piece.includes("pawn-black")) {
-          console.log("Handling black pawn moves on ", otherX, otherY);
+          // console.log("Handling black pawn moves on ", otherX, otherY);
           handlePossibleLegalBlackPawnMoves();
           handleBlackPawnObstacles();
         }
@@ -1247,9 +1247,9 @@ function Board({ shouldReset, setShouldReset }) {
           })
         ) {
           hasAnyLegalMoves = true;
-          console.log(".SOME IS TRUE ",square.piece, " has legal moves on ", otherX, otherY)
+          console.log(".SOME IS TRUE ",square.piece, "  on ", otherX, otherY, "has legal moves")
         } else {
-          console.log(".SOME IS FALSE ", square.piece, " has no legal moves on ", otherX, otherY)
+          console.log(".SOME IS FALSE ", square.piece, " on ", otherX, otherY, "has no legal moves")
         }
       }
     });
