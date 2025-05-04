@@ -22,7 +22,7 @@
 /* ^^^^^^^^^^^^^^^^^^^^^^UNCOMMENT BELOW FOR .isMaybeLegal TO BE SEEN ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ ^ */
 
 
-.board-background__square_legal {
+/* .board-background__square_legal {
   background-color: lightgreen;
 }
 .board-background__square_maybe-legal {
@@ -34,7 +34,7 @@
 
 .board-background__square_dark.board-background__square_legal {
   background-color: rgba(0, 128, 0, 0.8); 
-}
+} */
 
 
 /* ^^^^^^^^^^^^^^^^^^^^^^^UNCOMMENT ABOVE FOR .isMaybeLegal TO BE SEEN ^^^^^^^^^^^^^^^^^^^^^^^^^^^ */
