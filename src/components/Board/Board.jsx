@@ -5,6 +5,7 @@ import Pieces from "../Pieces/Pieces";
 import { startingBoardData } from "../../utils/startingBoardData";
 import { alphabetArray } from "../../utils/constants";
 import PromotionSelector from "../PromotionSelector/PromotionSelector";
+import GameOverPopup from "../GameOverPopup/GameOverPopup";
 
 function Board({ shouldReset, setShouldReset }) {
   const [boardData, setBoardData] = useState([]);
@@ -243,83 +244,6 @@ function Board({ shouldReset, setShouldReset }) {
     });
   };
 
-  // const handleKingObstaclespax = () => {
-  //   handleKnightObstacles(); // does most of the work
-  //   setBoardData((prevState) => {
-  //     // this makes sure the king doesn't "walk in to check", in official chess this would be an "illegal move" not allowed by online chess games.
-  //     const newState = [...prevState];
-
-  //     newState.forEach((square) => {
-  //       if (square.isLegal) {
-  //         // const tempBoardData = boardData.map((s) => ({ ...s }));
-  //         const tempBoardData = structuredClone(boardData);
-  //         const kingCurrentSquare = tempBoardData.find(
-  //           (s) =>
-  //             s.xAxis ===
-  //               (isForReal ? selectedSquare.coordinates[0] : otherX) &&
-  //             s.yAxis === (isForReal ? selectedSquare.coordinates[1] : otherY)
-  //         );
-  //         kingCurrentSquare.piece = "";
-
-  //         if (
-  //           isSquareSeen(
-  //             [square.xAxis, square.yAxis],
-  //             otherColor,
-  //             tempBoardData
-  //           )
-  //         ) {
-  //           square.isLegal = false;
-  //         }
-  //       }
-  //     });
-
-  //     return newState;
-  //   });
-  // };
-
-  // const handleKingObstaclesdot2 = () => {
-  //   handleKnightObstacles(); // does most of the work
-  //   setBoardData((prevState) => {
-  //     const newState = [...prevState];
-
-  //     newState.forEach((square) => {
-  //       if (square.isLegal) {
-  //         const tempBoardData = structuredClone(boardData);
-  //         console.log("Searching for king at:", otherX, otherY);
-  //         console.log("Board data:", tempBoardData);
-  //         const kingCurrentSquare = tempBoardData.find((s) => {
-  //           console.log("Comparing with square:", s.xAxis, s.yAxis);
-  //           return (
-  //             s.xAxis ===
-  //               (isForReal ? selectedSquare.coordinates[0] : otherX) &&
-  //             s.yAxis === (isForReal ? selectedSquare.coordinates[1] : otherY)
-  //           );
-  //         });
-
-  //         // Add this check
-  //         if (!kingCurrentSquare) {
-  //           console.log("Warning: King square not found", otherX, otherY);
-  //           return;
-  //         }
-
-  //         kingCurrentSquare.piece = "";
-
-  //         if (
-  //           isSquareSeen(
-  //             [square.xAxis, square.yAxis],
-  //             otherColor,
-  //             tempBoardData
-  //           )
-  //         ) {
-  //           square.isLegal = false;
-  //         }
-  //       }
-  //     });
-
-  //     return newState;
-  //   });
-  // };
-
   const handleKingObstacles = (boardDataParam) => {
     const newState = [...boardDataParam];
 
@@ -350,28 +274,6 @@ function Board({ shouldReset, setShouldReset }) {
     return handleKnightObstacles(newState);
   };
 
-  // const handlePossibleLegalRookMoves = (boardDataParam) => {
-  //   console.log("inside handlePossibleLegalRookMoves, getPieceCoordinateX(): ", getPieceCoordinateX(), " getPieceCoordinateY(): ", getPieceCoordinateY())
-  //   setBoardData((prevState) => {
-  //     const newState = [...prevState];
-
-  //     newState.forEach((square) => {
-  //       if (
-  //         (square.xAxis === getPieceCoordinateX() ||
-  //           square.yAxis === getPieceCoordinateY()) &&
-  //         !(
-  //           square.xAxis === getPieceCoordinateX() &&
-  //           square.yAxis === getPieceCoordinateY()
-  //         )
-  //       ) {
-  //         square.isLegal = true;
-  //         square.isMaybeLegal = true;
-  //       }
-  //     });
-  //     console.log("Rook PossibleLegal newState: ", newState)
-  //     return newState;
-  //   });
-  // };
   const handlePossibleLegalRookMoves = (boardDataParam) => {
     const newState = [...boardDataParam];
 
@@ -472,17 +374,6 @@ function Board({ shouldReset, setShouldReset }) {
     const downLeftBlocks = [];
     const downRightBlocks = [];
 
-    // console.log(
-    //   "getPieceCoordinateX(): ",
-    //   getPieceCoordinateX(),
-    //   " getPieceCoordinateY(): ",
-    //   getPieceCoordinateY()
-    // );
-
-    // console.log("newState: ", newState);
-
-    //       if ()
-
     newState.forEach((square) => {
       const xDiff = square.xAxis - getPieceCoordinateX();
       const yDiff = square.yAxis - getPieceCoordinateY();
@@ -518,14 +409,6 @@ function Board({ shouldReset, setShouldReset }) {
       }
     });
 
-    // console.log(
-    //   "blocks: ",
-    //   upLeftBlocks,
-    //   upRightBlocks,
-    //   downLeftBlocks,
-    //   downRightBlocks
-    // );
-
     newState.forEach((square) => {
       // don't move past closest piece on each diagonal, closest piece being the same color is handled with handleKnightObstacles
       if (
@@ -544,12 +427,6 @@ function Board({ shouldReset, setShouldReset }) {
 
     return handleKnightObstacles(newState); // if piece is same color don't land on it
   };
-
-  // const handlePossibleLegalQueenMoves = (boardDataParam) => {
-  //   // queen is rook and bishop combined, very fun
-  //   handlePossibleLegalBishopMoves();
-  //   handlePossibleLegalRookMoves();
-  // };
 
   const handlePossibleLegalQueenMoves = (boardDataParam) => {
     let updatedBoardData = handlePossibleLegalBishopMoves(boardDataParam);
@@ -803,19 +680,6 @@ function Board({ shouldReset, setShouldReset }) {
     return newState;
   };
 
-  // const makeAllSquaresIllegal = () => {
-  //   // this resets all squares to isLegal = false, is the first thing that always fires when selecting a square to clear the legal squares of the previous piece
-  //   setBoardData((prevState) => {
-  //     const newState = [...prevState];
-
-  //     newState.forEach((square) => {
-  //       square.isLegal = false;
-  //       square.isMaybeLegal = false;
-  //     });
-
-  //     return newState;
-  //   });
-  // };
   const makeAllSquaresIllegal = (boardDataParam) => {
     const newState = [...boardDataParam];
 
@@ -844,165 +708,6 @@ function Board({ shouldReset, setShouldReset }) {
     setPromotionColor("");
     setPromotionSquare("");
   };
-
-  // const handleIsPinnedToKing = () => {
-  //   // pieces pinned to the king can still move, they just can't move out of the pin
-  //   const xRightBlocks = [];
-  //   const xLeftBlocks = [];
-  //   const yUpBlocks = [];
-  //   const yDownBlocks = [];
-  //   const upRightBlocks = [];
-  //   const upLeftBlocks = [];
-  //   const downRightBlocks = [];
-  //   const downLeftBlocks = [];
-
-  //   boardData.forEach((square) => {
-  //     if (square.piece.includes("piece__")) {
-  //       if (square.xAxis === getPieceCoordinateX()) {
-  //         if (square.yAxis > getPieceCoordinateY())
-  //           yUpBlocks.push(square.yAxis);
-  //         if (square.yAxis < getPieceCoordinateY())
-  //           yDownBlocks.push(square.yAxis);
-  //       }
-  //       if (square.yAxis === getPieceCoordinateY()) {
-  //         if (square.xAxis > getPieceCoordinateX())
-  //           xRightBlocks.push(square.xAxis);
-  //         if (square.xAxis < getPieceCoordinateX())
-  //           xLeftBlocks.push(square.xAxis);
-  //       }
-
-  //       const xDiff = square.xAxis - getPieceCoordinateX();
-  //       const yDiff = square.yAxis - getPieceCoordinateY();
-  //       if (Math.abs(xDiff) === Math.abs(yDiff)) {
-  //         if (xDiff > 0 && yDiff > 0) upRightBlocks.push(square.xAxis);
-  //         if (xDiff < 0 && yDiff > 0) upLeftBlocks.push(square.xAxis);
-  //         if (xDiff > 0 && yDiff < 0) downRightBlocks.push(square.xAxis);
-  //         if (xDiff < 0 && yDiff < 0) downLeftBlocks.push(square.xAxis);
-  //       }
-  //     }
-  //   });
-
-  //   const isVerticalPinned =
-  //     boardData.some(
-  //       (square) =>
-  //         (square.piece.includes("rook") ||
-  //           (square.piece.includes("queen") &&
-  //             square.piece.includes(otherColor))) &&
-  //         ((square.yAxis === Math.min(...yUpBlocks) &&
-  //           square.xAxis === getPieceCoordinateX()) ||
-  //           (square.yAxis === Math.max(...yDownBlocks) &&
-  //             square.xAxis === getPieceCoordinateX()))
-  //     ) &&
-  //     boardData.some(
-  //       (square) =>
-  //         square.piece.includes("king") &&
-  //         square.piece.includes(thisPieceColor) &&
-  //         ((square.yAxis === Math.min(...yUpBlocks) &&
-  //           square.xAxis === getPieceCoordinateX()) ||
-  //           (square.yAxis === Math.max(...yDownBlocks) &&
-  //             square.xAxis === getPieceCoordinateX()))
-  //     );
-
-  //   const isHorizontalPinned =
-  //     boardData.some(
-  //       (square) =>
-  //         (square.piece.includes("rook") || square.piece.includes("queen")) &&
-  //         square.piece.includes(otherColor) &&
-  //         ((square.xAxis === Math.max(...xLeftBlocks) &&
-  //           square.yAxis === getPieceCoordinateY()) ||
-  //           (square.xAxis === Math.min(...xRightBlocks) &&
-  //             square.yAxis === getPieceCoordinateY()))
-  //     ) &&
-  //     boardData.some(
-  //       (square) =>
-  //         square.piece.includes("king") &&
-  //         square.piece.includes(thisPieceColor) &&
-  //         ((square.xAxis === Math.max(...xLeftBlocks) &&
-  //           square.yAxis === getPieceCoordinateY()) ||
-  //           (square.xAxis === Math.min(...xRightBlocks) &&
-  //             square.yAxis === getPieceCoordinateY()))
-  //     );
-
-  //   const isUpRightDiagonalPinned =
-  //     boardData.some((square) => {
-  //       const xDiff = square.xAxis - getPieceCoordinateX();
-  //       const yDiff = square.yAxis - getPieceCoordinateY();
-  //       return (
-  //         Math.abs(xDiff) === Math.abs(yDiff) &&
-  //         (square.piece.includes("bishop") || square.piece.includes("queen")) &&
-  //         square.piece.includes(otherColor) &&
-  //         ((square.xAxis === Math.min(...upRightBlocks) &&
-  //           square.yAxis > getPieceCoordinateY()) ||
-  //           (square.xAxis === Math.max(...downLeftBlocks) &&
-  //             square.yAxis < getPieceCoordinateY()))
-  //       );
-  //     }) &&
-  //     boardData.some((square) => {
-  //       const xDiff = square.xAxis - getPieceCoordinateX();
-  //       const yDiff = square.yAxis - getPieceCoordinateY();
-  //       return (
-  //         Math.abs(xDiff) === Math.abs(yDiff) &&
-  //         square.piece.includes("king") &&
-  //         square.piece.includes(thisPieceColor) &&
-  //         ((square.xAxis === Math.min(...upRightBlocks) &&
-  //           square.yAxis > getPieceCoordinateY()) ||
-  //           (square.xAxis === Math.max(...downLeftBlocks) &&
-  //             square.yAxis < getPieceCoordinateY()))
-  //       );
-  //     });
-
-  //   const isUpLeftDiagonalPinned =
-  //     boardData.some((square) => {
-  //       const xDiff = square.xAxis - getPieceCoordinateX();
-  //       const yDiff = square.yAxis - getPieceCoordinateY();
-  //       return (
-  //         Math.abs(xDiff) === Math.abs(yDiff) &&
-  //         (square.piece.includes("bishop") || square.piece.includes("queen")) &&
-  //         square.piece.includes(otherColor) &&
-  //         ((square.xAxis === Math.max(...upLeftBlocks) &&
-  //           square.yAxis > getPieceCoordinateY()) ||
-  //           (square.xAxis === Math.min(...downRightBlocks) &&
-  //             square.yAxis < getPieceCoordinateY()))
-  //       );
-  //     }) &&
-  //     boardData.some((square) => {
-  //       const xDiff = square.xAxis - getPieceCoordinateX();
-  //       const yDiff = square.yAxis - getPieceCoordinateY();
-  //       return (
-  //         Math.abs(xDiff) === Math.abs(yDiff) &&
-  //         square.piece.includes("king") &&
-  //         square.piece.includes(thisPieceColor) &&
-  //         ((square.xAxis === Math.max(...upLeftBlocks) &&
-  //           square.yAxis > getPieceCoordinateY()) ||
-  //           (square.xAxis === Math.min(...downRightBlocks) &&
-  //             square.yAxis < getPieceCoordinateY()))
-  //       );
-  //     });
-
-  //   setBoardData((prevState) => {
-  //     const newState = [...prevState];
-
-  //     newState.forEach((square) => {
-  //       const xDiff = square.xAxis - getPieceCoordinateX();
-  //       const yDiff = square.yAxis - getPieceCoordinateY();
-
-  //       if (
-  //         (isVerticalPinned && square.xAxis !== getPieceCoordinateX()) ||
-  //         (isHorizontalPinned && square.yAxis !== getPieceCoordinateY()) ||
-  //         (isUpRightDiagonalPinned &&
-  //           ((!(xDiff > 0 && yDiff > 0) && !(xDiff < 0 && yDiff < 0)) ||
-  //             !(Math.abs(xDiff) === Math.abs(yDiff)))) ||
-  //         (isUpLeftDiagonalPinned &&
-  //           ((!(xDiff < 0 && yDiff > 0) && !(xDiff > 0 && yDiff < 0)) ||
-  //             !(Math.abs(xDiff) === Math.abs(yDiff))))
-  //       ) {
-  //         square.isLegal = false;
-  //       }
-  //     });
-
-  //     return newState;
-  //   });
-  // };
 
   const handleIsPinnedToKing = (boardDataParam) => {
     const newState = [...boardDataParam];
@@ -1161,99 +866,6 @@ function Board({ shouldReset, setShouldReset }) {
     return newState;
   };
 
-  // const handleIsPinnedToKing = (boardDataParam) => {
-  //   const newState = [...boardDataParam];
-
-  //   // Find the king's current position
-  //   const kingSquare = newState.find((square) =>
-  //     square.piece.includes(isWhiteTurn ? "king-white" : "king-black")
-  //   );
-
-  //   if (!kingSquare) {
-  //     console.error("King not found on the board!");
-  //     return newState; // Return the board unchanged if the king is missing
-  //   }
-
-  //   const kingX = kingSquare.xAxis;
-  //   const kingY = kingSquare.yAxis;
-
-  //   // Iterate through all squares to check for pinned pieces
-  //   newState.forEach((square) => {
-  //     if (square.isLegal) {
-  //       // Create a temporary board to simulate the move
-  //       const tempBoardData = structuredClone(newState);
-
-  //       // Simulate the move by removing the piece from its current square
-  //       const currentSquare = tempBoardData.find(
-  //         (s) => s.xAxis === square.xAxis && s.yAxis === square.yAxis
-  //       );
-  //       if (currentSquare) {
-  //         currentSquare.piece = "";
-  //       }
-
-  //       // Check if the king is in check after the move
-  //       if (
-  //         isSquareSeen(
-  //           [kingX, kingY],
-  //           isWhiteTurn ? "black" : "white",
-  //           tempBoardData
-  //         )
-  //       ) {
-  //         // If the king is in check, mark the move as illegal
-  //         square.isLegal = false;
-  //       }
-  //     }
-  //   });
-
-  //   return newState; // Return the updated board data
-  // };
-
-  // const handleBlockChecks = () => {
-  //   const king = isWhiteTurn
-  //     ? boardData.find((square) => square.piece.includes("king-white"))
-  //     : boardData.find((square) => square.piece.includes("king-black"));
-  //   // console.log(king);
-
-  //   if (
-  //     isSquareSeen([king?.xAxis, king?.yAxis], isWhiteTurn ? "black" : "white")
-  //   ) {
-  //     // console.log("king is seen");
-  //     setBoardData((prevState) => {
-  //       const newState = [...prevState];
-
-  //       newState.forEach((square) => {
-  //         // this part will remove all legal squares that don't block the check, if it's a double check, it will remove all non-king moves
-  //         if (square.isLegal) {
-  //           if (selectedSquare.piece.includes("king")) {
-  //             // if a king is selcted, removing squares that don't block check doesn't make sense, the king itself will just move out of check, handled in handleKingObstacles
-  //             return;
-  //           }
-  //           const tempBoardData = structuredClone(boardData);
-  //           // to see if a square blocks all checks, we need to create a copy of the current position to move the pieces
-  //           const squareMaybeBlocksCheck = tempBoardData.find(
-  //             (blockingSquare) =>
-  //               blockingSquare.squareName === square.squareName
-  //           ); // find the square being tested in the tempBoardData
-  //           squareMaybeBlocksCheck.piece = "piece_"; //this puts a non-specific "piece_" on the square
-  //           if (
-  //             // testing if the addition of a piece on this square blocks the check
-  //             isSquareSeen(
-  //               [king.xAxis, king.yAxis],
-  //               isWhiteTurn ? "black" : "white",
-  //               tempBoardData
-  //             )
-  //           ) {
-  //             square.isLegal = false;
-  //             // when a being placed on this square doesn't block the check, the square becomes an illegal move
-  //           }
-  //         }
-  //       });
-
-  //       return newState;
-  //     });
-  //   }
-  // };
-
   const handleBlockChecks = (boardDataParam) => {
     const newState = [...boardDataParam];
     const king = isWhiteTurn
@@ -1349,8 +961,7 @@ function Board({ shouldReset, setShouldReset }) {
           })
         ) {
           hasAnyLegalMoves = true;
-
-        } 
+        }
       }
     });
     isForReal = true;
@@ -1373,14 +984,14 @@ function Board({ shouldReset, setShouldReset }) {
     return result;
   };
 
-  useEffect(() => {
-    console.log(
-      "isNoLegalMoves: ",
-      isNoLegalMoves(boardData)
-      // " isInCheck: ",
-      // isInCheck(boardData)
-    );
-  }, [isWhiteTurn, isPromotion]);
+  // useEffect(() => {
+  //   console.log(
+  //     "isNoLegalMoves: ",
+  //     isNoLegalMoves(boardData)
+  //     // " isInCheck: ",
+  //     // isInCheck(boardData)
+  //   );
+  // }, [isWhiteTurn, isPromotion]);
 
   const handleLegalMoves = () => {
     let updatedBoardData = structuredClone(boardData); // Start with a copy of the current board data
@@ -1686,6 +1297,12 @@ function Board({ shouldReset, setShouldReset }) {
           isOpen={isPromotion}
           color={promotionColor}
           handlePromotion={handlePromotion}
+        />
+        <GameOverPopup
+          isOpen={!isPromotion && isNoLegalMoves()}
+          isInCheck={isInCheck()}
+          isWhiteTurn={isWhiteTurn}
+          resetBoard={resetBoard}
         />
         <Pieces boardData={boardData} />
         <BoardBackground boardData={boardData} />
