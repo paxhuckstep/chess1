@@ -35,6 +35,7 @@ for (let i = 0; i < 8; i++) {
 }
 
 // startingBoardData[36].piece = "piece__queen-black";
+
 // startingBoardData[42].piece = "piece__knight-black";
 // startingBoardData[38].piece = "piece__bishop-white";
 // startingBoardData[41].piece = "piece__rook-black";
@@ -45,3 +46,17 @@ for (let i = 0; i < 8; i++) {
 // startingBoardData[21].piece = "piece__pawn-white";
 // startingBoardData[25].piece = "piece__pawn-black";
 // startingBoardData[43].piece = "piece__pawn-white";
+
+
+////////////////////////////////////////////////////
+// for testing promotion checkmates :
+
+// startingBoardData[4].piece = "";
+// startingBoardData[5].piece = "piece__bishop-white";
+// startingBoardData[12].piece = "piece__pawn-white"
+// startingBoardData[28].piece = "piece__rook-white";
+// startingBoardData[10].piece = "piece__knight-white";
+// startingBoardData[11].piece = "piece__knight-white";
+// startingBoardData[6].piece = "piece__knight-white";
+// startingBoardData[3].piece = "piece__knight-white";
+// startingBoardData[33].piece = "piece__king-black";

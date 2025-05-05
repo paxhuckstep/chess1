@@ -25,6 +25,8 @@ function Board({ shouldReset, setShouldReset }) {
   const [isPromotion, setIsPromotion] = useState(false);
   const [promotionColor, setPromotionColor] = useState("");
   const [promotionSquare, setPromotionSquare] = useState("");
+  const [isCheck, setIsCheck] = useState(false);
+  const [isGameOver, setIsGameOver] = useState(false);
 
   const thisPieceColor = isWhiteTurn ? "white" : "black";
   const otherColor = isWhiteTurn ? "black" : "white";
@@ -55,6 +57,9 @@ function Board({ shouldReset, setShouldReset }) {
     setIsWhiteTurn(true);
     setWhiteEnPessant("");
     setBlackEnPessant("");
+    setIsPromotion(false);
+    setPromotionColor("");
+    setPromotionSquare("");
   };
 
   const handlePossibleLegalKnightMoves = (boardDataParam) => {
@@ -249,17 +254,12 @@ function Board({ shouldReset, setShouldReset }) {
 
     newState.forEach((square) => {
       if (square.isLegal) {
-        const tempBoardData = structuredClone(boardData);
+        const tempBoardData = structuredClone(newState);
         const kingCurrentSquare = tempBoardData.find(
           (s) =>
             s.xAxis === getPieceCoordinateX() &&
             s.yAxis === getPieceCoordinateY()
         );
-
-        // if (!kingCurrentSquare) {
-        //   console.log("Warning: King square not found", currentX, currentY);
-        //   return;
-        // }
 
         kingCurrentSquare.piece = "";
 
@@ -909,23 +909,35 @@ function Board({ shouldReset, setShouldReset }) {
   };
 
   const isNoLegalMoves = () => {
+    // console.log("isNoLegalMoves fired");
     isForReal = false;
     let hasAnyLegalMoves = false;
     let checkedBoardData = structuredClone(boardData);
 
     boardData.forEach((square) => {
       checkedBoardData = makeAllSquaresIllegal(checkedBoardData);
+
       if (square.piece.includes(thisPieceColor)) {
         otherX = square.xAxis;
         otherY = square.yAxis;
+
         if (square.piece.includes("king")) {
           checkedBoardData = handlePossibleLegalKingMoves(checkedBoardData);
-          checkedBoardData = handleKingObstacles(
-            checkedBoardData,
-            square.xAxis,
-            square.yAxis
-          );
+          // const possibleKingMoves = checkedBoardData.filter(
+            // (square) => square.isLegal
+          // );
+          // console.log("possibleKingMoves", possibleKingMoves);
+          checkedBoardData = handleKingObstacles(checkedBoardData);
+          // const possibleKingMovesAfterObstacles = checkedBoardData.filter(
+          //   (square) => square.isLegal
+          // );
+          // console.log(
+          //   "possibleKingMovesAfterObstacles",
+          //   possibleKingMovesAfterObstacles
+          // );
+          // console.log("king checkedBoardData", checkedBoardData);
         }
+
         if (square.piece.includes("queen")) {
           checkedBoardData = handlePossibleLegalQueenMoves(checkedBoardData);
           checkedBoardData = handleQueenObstacles(checkedBoardData);
@@ -952,9 +964,11 @@ function Board({ shouldReset, setShouldReset }) {
             handlePossibleLegalBlackPawnMoves(checkedBoardData);
           checkedBoardData = handleBlackPawnObstacles(checkedBoardData);
         }
-        checkedBoardData = handleIsPinnedToKing(checkedBoardData);
-        checkedBoardData = handleBlockChecks(checkedBoardData);
-
+        // checkedBoardData = handleIsPinnedToKing(checkedBoardData);
+        // checkedBoardData = handleBlockChecks(checkedBoardData);
+        // const legalSquares = checkedBoardData.filter(
+        //   (square) => square.isLegal === true )
+        // console.log("square.piece: ", square.piece, "legalSquares", legalSquares);
         if (
           checkedBoardData.some((square) => {
             return square.isLegal;
@@ -965,8 +979,15 @@ function Board({ shouldReset, setShouldReset }) {
       }
     });
     isForReal = true;
+    // console.log(
+    //   "isWhiteTurn: ",
+    //   isWhiteTurn,
+    //   "hasAnyLegalMoves",
+    //   hasAnyLegalMoves
+    // );
     return !hasAnyLegalMoves;
   };
+
   const isInCheck = () => {
     let result = null;
     const king = isWhiteTurn
@@ -984,14 +1005,10 @@ function Board({ shouldReset, setShouldReset }) {
     return result;
   };
 
-  // useEffect(() => {
-  //   console.log(
-  //     "isNoLegalMoves: ",
-  //     isNoLegalMoves(boardData)
-  //     // " isInCheck: ",
-  //     // isInCheck(boardData)
-  //   );
-  // }, [isWhiteTurn, isPromotion]);
+  useEffect(() => {
+    setIsGameOver(isNoLegalMoves());
+    setIsCheck(isInCheck());
+  }, [isWhiteTurn, isPromotion, boardData]);
 
   const handleLegalMoves = () => {
     let updatedBoardData = structuredClone(boardData); // Start with a copy of the current board data
@@ -1002,11 +1019,7 @@ function Board({ shouldReset, setShouldReset }) {
     ) {
       if (selectedSquare.piece.includes("king")) {
         updatedBoardData = handlePossibleLegalKingMoves(updatedBoardData);
-        updatedBoardData = handleKingObstacles(
-          updatedBoardData,
-          selectedSquare.coordinates[0],
-          selectedSquare.coordinates[1]
-        );
+        updatedBoardData = handleKingObstacles(updatedBoardData);
         if (isWhiteTurn) {
           if (!(hasWhiteKingMoved || hasRookH1Moved)) {
             updatedBoardData = handleWhiteShortCastle(updatedBoardData);
@@ -1290,6 +1303,9 @@ function Board({ shouldReset, setShouldReset }) {
     }
   }, [shouldReset]);
 
+  // console.log("isGameOver: ", isGameOver);
+  // console.log('isPromotion' , isPromotion);
+
   return (
     <>
       <div className="board">
@@ -1299,8 +1315,8 @@ function Board({ shouldReset, setShouldReset }) {
           handlePromotion={handlePromotion}
         />
         <GameOverPopup
-          isOpen={!isPromotion && isNoLegalMoves()}
-          isInCheck={isInCheck()}
+          isOpen={!isPromotion && isGameOver}
+          isInCheck={isCheck}
           isWhiteTurn={isWhiteTurn}
           resetBoard={resetBoard}
         />
