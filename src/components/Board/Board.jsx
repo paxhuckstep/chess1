@@ -913,6 +913,7 @@ function Board({ shouldReset, setShouldReset }) {
     isForReal = false;
     let hasAnyLegalMoves = false;
     let checkedBoardData = structuredClone(boardData);
+    let kingLegalMoves = [];
 
     boardData.forEach((square) => {
       checkedBoardData = makeAllSquaresIllegal(checkedBoardData);
@@ -924,7 +925,7 @@ function Board({ shouldReset, setShouldReset }) {
         if (square.piece.includes("king")) {
           checkedBoardData = handlePossibleLegalKingMoves(checkedBoardData);
           // const possibleKingMoves = checkedBoardData.filter(
-            // (square) => square.isLegal
+          // (square) => square.isLegal
           // );
           // console.log("possibleKingMoves", possibleKingMoves);
           checkedBoardData = handleKingObstacles(checkedBoardData);
@@ -936,6 +937,11 @@ function Board({ shouldReset, setShouldReset }) {
           //   possibleKingMovesAfterObstacles
           // );
           // console.log("king checkedBoardData", checkedBoardData);
+
+          kingLegalMoves = checkedBoardData.filter(
+            (square) => square.isLegal === true
+          );
+          console.log("King's legal moves:", kingLegalMoves);
         }
 
         if (square.piece.includes("queen")) {
@@ -964,15 +970,13 @@ function Board({ shouldReset, setShouldReset }) {
             handlePossibleLegalBlackPawnMoves(checkedBoardData);
           checkedBoardData = handleBlackPawnObstacles(checkedBoardData);
         }
-        // checkedBoardData = handleIsPinnedToKing(checkedBoardData);
-        // checkedBoardData = handleBlockChecks(checkedBoardData);
-        // const legalSquares = checkedBoardData.filter(
-        //   (square) => square.isLegal === true )
-        // console.log("square.piece: ", square.piece, "legalSquares", legalSquares);
+        checkedBoardData = handleIsPinnedToKing(checkedBoardData);
+        checkedBoardData = handleBlockChecks(checkedBoardData);
         if (
           checkedBoardData.some((square) => {
             return square.isLegal;
-          })
+          }) ||
+          kingLegalMoves.length > 0
         ) {
           hasAnyLegalMoves = true;
         }
@@ -985,6 +989,7 @@ function Board({ shouldReset, setShouldReset }) {
     //   "hasAnyLegalMoves",
     //   hasAnyLegalMoves
     // );
+
     return !hasAnyLegalMoves;
   };
 
@@ -1008,6 +1013,7 @@ function Board({ shouldReset, setShouldReset }) {
   useEffect(() => {
     setIsGameOver(isNoLegalMoves());
     setIsCheck(isInCheck());
+    // console.log("isGameOver", isGameOver, "isCheck", isCheck);
   }, [isWhiteTurn, isPromotion, boardData]);
 
   const handleLegalMoves = () => {

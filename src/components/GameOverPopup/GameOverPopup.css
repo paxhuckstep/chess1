@@ -1,22 +1,44 @@
 .game-over {
-    position: absolute;
-    /* left: 300px; */
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 999;
-    display: flex;
-    flex-direction: column;
-    width: 300px;
-    /* gap: 10px; */
-    background-color: white;
-    border: solid black 2px;
-    text-align: center;
+  /* Keep your existing positioning properties */
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 999;
+  
+  /* Enhanced styling */
+  display: flex;
+  flex-direction: column;
+  gap: 20px;  /* Uncomment and increase the gap */
+  width: 300px;
+  padding: 25px;
+  background-color: white;
+  border-radius: 12px;  /* Rounded corners */
+  border: none;  /* Remove the border */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);  /* Subtle shadow */
+  text-align: center;
+}
 
-  }
+.game-over__reset {
+  padding: 10px 20px;
+  background-color: #4CAF50;  /* Nice green color */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin: 10px auto;
+}
 
-  .game-over__reset {
-    align-items: center;
-    margin: 0 auto 10px;
-    width: 40%;
-  }
+.game-over__reset:hover {
+  background-color: #45a049;  /* Darker green on hover */
+}
+
+/* Add this for the text */
+.game-over h2 {
+  margin: 0;
+  color: #333;
+  font-size: 24px;
+}
+
