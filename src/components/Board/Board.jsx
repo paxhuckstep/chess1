@@ -60,6 +60,8 @@ function Board({ shouldReset, setShouldReset }) {
     setIsPromotion(false);
     setPromotionColor("");
     setPromotionSquare("");
+    setIsGameOver(false);
+    setIsCheck(false);
   };
 
   const handlePossibleLegalKnightMoves = (boardDataParam) => {
@@ -941,7 +943,7 @@ function Board({ shouldReset, setShouldReset }) {
           kingLegalMoves = checkedBoardData.filter(
             (square) => square.isLegal === true
           );
-          console.log("King's legal moves:", kingLegalMoves);
+          // console.log("King's legal moves:", kingLegalMoves);
         }
 
         if (square.piece.includes("queen")) {
@@ -1011,10 +1013,12 @@ function Board({ shouldReset, setShouldReset }) {
   };
 
   useEffect(() => {
-    setIsGameOver(isNoLegalMoves());
-    setIsCheck(isInCheck());
+    if (boardData.length > 0) {
+      setIsGameOver(isNoLegalMoves());
+      setIsCheck(isInCheck());
+    }
     // console.log("isGameOver", isGameOver, "isCheck", isCheck);
-  }, [isWhiteTurn, isPromotion, boardData]);
+  }, [isWhiteTurn, isPromotion]);
 
   const handleLegalMoves = () => {
     let updatedBoardData = structuredClone(boardData); // Start with a copy of the current board data
