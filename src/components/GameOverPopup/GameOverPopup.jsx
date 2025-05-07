@@ -7,7 +7,7 @@ function GameOverPopup({ isOpen, isCheck, isWhiteTurn, resetBoard }) {
     ? isWhiteTurn
       ? "Black wins by checkmate!"
       : "White wins by checkmate!"
-    : "Stalemate!";
+    : "Stalemate! It's a draw.";
 
   const closePopup = () => {
     setIsClosed(true);
