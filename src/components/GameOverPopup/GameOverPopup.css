@@ -5,23 +5,38 @@
   top: 50%;
   transform: translate(-50%, -50%);
   z-index: 999;
-  
-  /* Enhanced styling */
   display: flex;
   flex-direction: column;
-  gap: 20px;  /* Uncomment and increase the gap */
+  gap: 20px; /* Uncomment and increase the gap */
   width: 300px;
   padding: 25px;
   background-color: white;
-  border-radius: 12px;  /* Rounded corners */
-  border: none;  /* Remove the border */
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);  /* Subtle shadow */
+  border-radius: 12px; /* Rounded corners */
+  border: none; /* Remove the border */
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Subtle shadow */
   text-align: center;
+}
+
+.game-over__close {
+  padding: 3px 6px;
+  margin: 0 0 0 auto;
+  transition: background-color 0.2s;
+  cursor: pointer;
+  border-radius: 6px;
+  background-color: #333;
+  color: lightgrey;
+  border: 1px solid transparent;
+}
+
+.game-over__close:hover {
+  background-color: darkgrey;
+  color: black;
+  border: 1px solid black;
 }
 
 .game-over__reset {
   padding: 10px 20px;
-  background-color: #4CAF50;  /* Nice green color */
+  background-color: #4caf50; /* Nice green color */
   color: white;
   border: none;
   border-radius: 6px;
@@ -32,7 +47,7 @@
 }
 
 .game-over__reset:hover {
-  background-color: #45a049;  /* Darker green on hover */
+  background-color: #45a049; /* Darker green on hover */
 }
 
 /* Add this for the text */
@@ -41,4 +56,3 @@
   color: #333;
   font-size: 24px;
 }
-

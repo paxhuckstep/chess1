@@ -36,13 +36,26 @@ Pinned Pieces Logic
 Check Detection
 For "handleIsChecked", I initially struggled with allowing pieces to block check. The breakthrough came when implementing board state copying to test potential moves without affecting the actual game state - a solution that worked seamlessly.
 
-Future Implementation
-Remaining features to implement:
-- Pawn promotion
-- En passant
-- Turn system
+Pawn Promotion
+Adding this was pretty seamless and implimented really well with the logic I already had in movePiece. 
 
-I expect en passant to be the most challenging of these. The turn system is being implemented last to facilitate testing, and pawn promotion mainly requires adding UI elements for piece selection.
+En Pessant
+This took some thinking, but once I had the idea to set the enPessant value to the x coordinate value of the pawn being promoted, then the balls started rolling. There was some interesting corner cases to take care of, including pawn "i" behind a pawn "j" where "j" has en pessant as a possibility, can pawn "i" can capture a piece on the same column as the pawn "j" can en pessant. Hard to describe hopefully that makes sense. There was also a lot of complications to movePiece to make sure that when en Pessant is played that the pawn it is capturing get's taken off the board.
+
+Turn system
+I delayed adding turns for as long as I could because testing how the pieces were moving was a lot easier when I could just move them around without worrying about who's turn it actually was, adding turns was easy and allowed for the functions regarding piece movement to no longer take in "thisPieceColor" and coordinate values because those could be infered and set globally based on who's turn it is.
+
+End Game, checkmate and stalemate
+When I started this I logically new that checkmate would just be a stalemate + isInCheck, however figuring out a stalemate check, or rather "isNoLegalMoves" was definitely the most challenging part of this project. The first issue I had, that took way to long to figure out, is that each of my handelePossibleLegal*Moves and handle*Obstacles functions were directly altering the useState of boardData, which made isNoLegalMoves go crazy when I was trying to repeteadly change and test boardData inbetween each move and the timings in javascript were getting all sorts of messed up and the things I would console to the log wouldn't make any sense making finding the source of the issue (altering the useState rather than a normal array) very hard to find. Once I got that figured out and changed all the handlePossibeLegal*Moves and handle*Obstacles functions to return an array that can then later change the useState made it so I could actually re-use all the functions inside of isNoLegalMoves without having to deal with useState being slow and giving half calculated answers. For some reason after doing this there is still a bug regarding king moves when it's in check, it can just walk out of check, but there are no pieces that can block the check, that honestly doesn't seem to make sense, but I worked around it with the kingLegalMoves > 0 check alongside the .some at the end of isNolegalMoves.
+
+Future Implimentations
+I am very happy with where it is currently at, might add these in the future:
+- Move tracking, so games can be recorded (this works best with future plans)
+// these next ones I probably won't add because they don't align with future plans of what I want to do with this chess board
+- 50 Move rule, if no pawns are moves and no pieces are captured in 50 moves, it's a draw
+- insuffecient material, if there aren't enough pieces for either side to checkmate, it's a draw.
+
+
 
 deployed at: 
 paxchess.netlify.app
