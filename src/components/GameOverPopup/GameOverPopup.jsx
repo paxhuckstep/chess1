@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import "./GameOverPopup.css";
-function GameOverPopup({ isOpen, isInCheck, isWhiteTurn, resetBoard }) {
+function GameOverPopup({ isOpen, isCheck, isWhiteTurn, resetBoard }) {
   const [isClosed, setIsClosed] = useState(false);
 
-  const endTypeText = isInCheck
+  const endTypeText = isCheck
     ? isWhiteTurn
       ? "Black wins by checkmate!"
       : "White wins by checkmate!"
