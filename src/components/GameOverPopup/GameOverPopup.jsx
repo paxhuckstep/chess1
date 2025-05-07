@@ -5,8 +5,8 @@ function GameOverPopup({ isOpen, isInCheck, isWhiteTurn, resetBoard }) {
 
   const endTypeText = isInCheck
     ? isWhiteTurn
-      ? "Black wins!"
-      : "White wins!"
+      ? "Black wins by checkmate!"
+      : "White wins by checkmate!"
     : "Stalemate!";
 
   const closePopup = () => {

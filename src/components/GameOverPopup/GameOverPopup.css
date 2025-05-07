@@ -7,10 +7,11 @@
   z-index: 999;
   display: flex;
   flex-direction: column;
-  gap: 20px; /* Uncomment and increase the gap */
+  gap: 15px; /* Uncomment and increase the gap */
   width: 300px;
   padding: 25px;
   background-color: white;
+  opacity: 99%;
   border-radius: 12px; /* Rounded corners */
   border: none; /* Remove the border */
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Subtle shadow */
@@ -47,12 +48,16 @@
 }
 
 .game-over__reset:hover {
-  background-color: #45a049; /* Darker green on hover */
+  background-color: #2b5f2e; /* Darker green on hover */
 }
 
 /* Add this for the text */
-.game-over h2 {
+.game-over__title {
   margin: 0;
+}
+
+.game-over__sub-title {
+  margin: 10px;
   color: #333;
   font-size: 24px;
 }
