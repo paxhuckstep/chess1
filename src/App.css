@@ -8,3 +8,8 @@
   display: flex;
   justify-content: center;
 }
+
+.app__board-reset {
+  margin-left: auto;
+  cursor: pointer;
+}

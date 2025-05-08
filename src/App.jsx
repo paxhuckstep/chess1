@@ -11,7 +11,7 @@ function App() {
 
   return (
     <div className="app">
-      <button onClick={handleReset}>Reset Game</button>
+      <button className="app__board-reset" onClick={handleReset}>Reset Game</button>
       <div className="app__board">
         <Board shouldReset={shouldReset} setShouldReset={setShouldReset} />
       </div>
