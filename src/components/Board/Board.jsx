@@ -1244,21 +1244,37 @@ function Board({ shouldReset, setShouldReset }) {
     }
   };
 
-  // const handleMouseUp = (event) => {
-  //       // console.log("MOUSE UP UP - target id:", event.target);
-  //       const squareData = boardData.find(
-  //         (square) => square.squareName === event.target.id.toString()
-  //       );
-  //       if (squareData?.isLegal) {
-  //         movePiece(
-  //           selectedSquare.piece,
-  //           squareData.squareName,
-  //           selectedSquare.coordinates
-  //         );
-  //       }
-  //         //  window.removeEventListener("mouseup", handleMouseUp);
+  const handleMouseUp = (event) => {
+        // // console.log("MOUSE UP UP - target id:", event.target);
+        // const squareData = boardData.find(
+        //   (square) => square.squareName === event.target.id.toString()
+        // );
+        // if (squareData?.isLegal) {
+        //   movePiece(
+        //     selectedSquare.piece,
+        //     squareData.squareName,
+        //     selectedSquare.coordinates
+        //   );
+        // }
+        //   //  window.removeEventListener("mouseup", handleMouseUp);
 
-  // };
+        // const piece = event.target.className;
+        // const coordinates = [
+        //   alphabetArray.indexOf(event.target.id.charAt(0)) + 1,
+        //   Number(event.target.id.charAt(1)),
+        // ];
+        const squareData = boardData.find(
+          (square) => square.squareName === event.target.id.toString()
+        );
+        // console.log(squareData);
+        if (squareData?.isLegal && !isPromotion) {
+          movePiece(
+            selectedSquare.piece,
+            squareData.squareName,
+            selectedSquare.coordinates
+          );
+
+  }};
 
   const handleMouseDown = (event) => {
     // console.log("MOUSE DOWN - target id:", event.target);
@@ -1285,11 +1301,11 @@ function Board({ shouldReset, setShouldReset }) {
 
   useEffect(() => {
     window.addEventListener("mousedown", handleMouseDown);
-    // window.addEventListener("mouseup", handleMouseUp);
+    window.addEventListener("mouseup", handleMouseUp);
 
     return () => {
       window.removeEventListener("mousedown", handleMouseDown);
-      // window.removeEventListener("mouseup", handleMouseUp);
+      window.removeEventListener("mouseup", handleMouseUp);
     };
   }, [selectedSquare, boardData]);
 
