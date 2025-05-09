@@ -6,6 +6,7 @@ import { startingBoardData } from "../../utils/startingBoardData";
 import { alphabetArray } from "../../utils/constants";
 import PromotionSelector from "../PromotionSelector/PromotionSelector";
 import GameOverPopup from "../GameOverPopup/GameOverPopup";
+import { handlePossibleLegalKnightMoves, handleKnightObstacles } from "../../utils/knightMoves";
 
 function Board({ shouldReset, setShouldReset }) {
   const [boardData, setBoardData] = useState([]);
@@ -63,44 +64,44 @@ function Board({ shouldReset, setShouldReset }) {
     setIsCheck(false);
   };
 
-  const handlePossibleLegalKnightMoves = (boardDataParam) => {
-    const newState = [...boardDataParam];
+  // const handlePossibleLegalKnightMoves = (boardDataParam) => {
+  //   const newState = [...boardDataParam];
 
-    newState.forEach((square) => {
-      if (
-        (square.xAxis === getPieceCoordinateX() + 2 &&
-          (square.yAxis === getPieceCoordinateY() + 1 ||
-            square.yAxis === getPieceCoordinateY() - 1)) ||
-        (square.xAxis === getPieceCoordinateX() - 2 &&
-          (square.yAxis === getPieceCoordinateY() + 1 ||
-            square.yAxis === getPieceCoordinateY() - 1)) ||
-        (square.yAxis === getPieceCoordinateY() + 2 &&
-          (square.xAxis === getPieceCoordinateX() + 1 ||
-            square.xAxis === getPieceCoordinateX() - 1)) ||
-        (square.yAxis === getPieceCoordinateY() - 2 &&
-          (square.xAxis === getPieceCoordinateX() + 1 ||
-            square.xAxis === getPieceCoordinateX() - 1))
-      ) {
-        square.isLegal = true;
-        square.isMaybeLegal = true; // isMaybeLegal doesn't do anything, just good for debugging during devolpement, will see throughout
-      }
-    });
+  //   newState.forEach((square) => {
+  //     if (
+  //       (square.xAxis === getPieceCoordinateX() + 2 &&
+  //         (square.yAxis === getPieceCoordinateY() + 1 ||
+  //           square.yAxis === getPieceCoordinateY() - 1)) ||
+  //       (square.xAxis === getPieceCoordinateX() - 2 &&
+  //         (square.yAxis === getPieceCoordinateY() + 1 ||
+  //           square.yAxis === getPieceCoordinateY() - 1)) ||
+  //       (square.yAxis === getPieceCoordinateY() + 2 &&
+  //         (square.xAxis === getPieceCoordinateX() + 1 ||
+  //           square.xAxis === getPieceCoordinateX() - 1)) ||
+  //       (square.yAxis === getPieceCoordinateY() - 2 &&
+  //         (square.xAxis === getPieceCoordinateX() + 1 ||
+  //           square.xAxis === getPieceCoordinateX() - 1))
+  //     ) {
+  //       square.isLegal = true;
+  //       square.isMaybeLegal = true; // isMaybeLegal doesn't do anything, just good for debugging during devolpement, will see throughout
+  //     }
+  //   });
 
-    return newState;
-  };
+  //   return newState;
+  // };
 
-  const handleKnightObstacles = (boardDataParam) => {
-    // only knight obstacle is not landing on your own piece, is used in all other piece obstacle handling
-    const newState = [...boardDataParam];
+  // const handleKnightObstacles = (boardDataParam) => {
+  //   // only knight obstacle is not landing on your own piece, is used in all other piece obstacle handling
+  //   const newState = [...boardDataParam];
 
-    newState.forEach((square) => {
-      if (square.isLegal && square.piece.includes(thisPieceColor)) {
-        square.isLegal = false;
-      }
-    });
+  //   newState.forEach((square) => {
+  //     if (square.isLegal && square.piece.includes(thisPieceColor)) {
+  //       square.isLegal = false;
+  //     }
+  //   });
 
-    return newState;
-  };
+  //   return newState;
+  // };
 
   const handlePossibleLegalKingMoves = (boardDataParam) => {
     const newState = [...boardDataParam];
@@ -952,8 +953,8 @@ function Board({ shouldReset, setShouldReset }) {
           checkedBoardData = handleRookObstacles(checkedBoardData);
         }
         if (square.piece.includes("knight")) {
-          checkedBoardData = handlePossibleLegalKnightMoves(checkedBoardData);
-          checkedBoardData = handleKnightObstacles(checkedBoardData);
+          checkedBoardData = handlePossibleLegalKnightMoves(checkedBoardData, [square.xAxis, square.yAxis]);
+          checkedBoardData = handleKnightObstacles(checkedBoardData, thisPieceColor);
         }
         if (square.piece.includes("bishop")) {
           checkedBoardData = handlePossibleLegalBishopMoves(checkedBoardData);
@@ -1046,8 +1047,8 @@ function Board({ shouldReset, setShouldReset }) {
         updatedBoardData = handlePossibleLegalQueenMoves(updatedBoardData);
         updatedBoardData = handleQueenObstacles(updatedBoardData);
       } else if (selectedSquare.piece.includes("knight")) {
-        updatedBoardData = handlePossibleLegalKnightMoves(updatedBoardData);
-        updatedBoardData = handleKnightObstacles(updatedBoardData);
+        updatedBoardData = handlePossibleLegalKnightMoves(updatedBoardData, selectedSquare.coordinates);
+        updatedBoardData = handleKnightObstacles(updatedBoardData, thisPieceColor);
       } else if (selectedSquare.piece.includes("pawn")) {
         if (isWhiteTurn) {
           updatedBoardData =
@@ -1067,7 +1068,7 @@ function Board({ shouldReset, setShouldReset }) {
   };
 
   const movePiece = (piece, newSquareName, oldSquareCoordinates) => {
-    // console.log("moved piece: ", piece, oldSquareCoordinates);
+    console.log("moved piece: ", piece, newSquareName, oldSquareCoordinates);
     if (piece.includes("king-white")) {
       setHasWhiteKingMoved(true);
     }
@@ -1268,6 +1269,7 @@ function Board({ shouldReset, setShouldReset }) {
         );
         // console.log(squareData);
         if (squareData?.isLegal && !isPromotion) {
+          // console.log("move Piece fired")
           movePiece(
             selectedSquare.piece,
             squareData.squareName,
