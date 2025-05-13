@@ -952,15 +952,15 @@ function Board({ shouldReset, setShouldReset }) {
           checkedBoardData = handleQueenObstacles(checkedBoardData, [square.xAxis, square.yAxis], thisPieceColor);
         }
         if (square.piece.includes("rook")) {
-          checkedBoardData = handlePossibleLegalRookMoves(checkedBoardData);
-          checkedBoardData = handleRookObstacles(checkedBoardData);
+          checkedBoardData = handlePossibleLegalRookMoves(checkedBoardData, [square.xAxis, square.yAxis]);
+          checkedBoardData = handleRookObstacles(checkedBoardData, [square.xAxis, square.yAxis], thisPieceColor);
         }
         if (square.piece.includes("knight")) {
           checkedBoardData = handlePossibleLegalKnightMoves(checkedBoardData, [square.xAxis, square.yAxis]);
           checkedBoardData = handleKnightObstacles(checkedBoardData, thisPieceColor);
         }
         if (square.piece.includes("bishop")) {
-          checkedBoardData = handlePossibleLegalBishopMoves(checkedBoardData, [square.xAxis, square,yAxis]);
+          checkedBoardData = handlePossibleLegalBishopMoves(checkedBoardData, [square.xAxis, square.yAxis]);
           checkedBoardData = handleBishopObstacles(checkedBoardData, [square.xAxis, square.yAxis], thisPieceColor);
         }
         if (square.piece.includes("pawn-white")) {

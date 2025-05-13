@@ -2,6 +2,7 @@ import { handleKnightObstacles } from "./knightMoves";
 
 const handlePossibleLegalRookMoves = (boardDataParam, coordinates) => {
     const newState = [...boardDataParam];
+    console.log("boardDataparam: ", boardDataParam, "coordinates: ", coordinates)
 
     newState.forEach((square) => {
       if (

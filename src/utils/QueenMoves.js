@@ -1,13 +1,13 @@
 import { handleBishopObstacles, handlePossibleLegalBishopMoves } from "./BishopMoves";
 import { handlePossibleLegalRookMoves, handleRookObstacles } from "./RookMoves";
 
-const handlePossibleLegalQueenMoves = (boardDataParam, coordinates, thisPieceColor) => {
+const handlePossibleLegalQueenMoves = (boardDataParam, coordinates) => {
     let updatedBoardData = handlePossibleLegalBishopMoves(boardDataParam, coordinates);
-    updatedBoardData = handlePossibleLegalRookMoves(updatedBoardData, coordinates, thisPieceColor);
+    updatedBoardData = handlePossibleLegalRookMoves(updatedBoardData, coordinates);
     return updatedBoardData;
   };
 
-  const handleQueenObstacles = (boardDataParam, coordinates) => {
+  const handleQueenObstacles = (boardDataParam, coordinates, thisPieceColor) => {
     let updatedBoardData = handleRookObstacles(boardDataParam, coordinates);
     updatedBoardData = handleBishopObstacles(updatedBoardData, coordinates, thisPieceColor);
     return updatedBoardData;
