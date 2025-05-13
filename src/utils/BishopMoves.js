@@ -26,7 +26,7 @@ const handlePossibleLegalBishopMoves = (boardDataParam, coordinates) => {
   };
 
   const handleBishopObstacles = (boardDataParam, coordinates, thisPieceColor) => {
-    // console.log("handleBishopObstacles fired")
+    console.log("coordinates: ", coordinates)
     const newState = [...boardDataParam];
     const upLeftBlocks = [];
     const upRightBlocks = [];

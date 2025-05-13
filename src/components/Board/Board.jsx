@@ -275,7 +275,7 @@ function Board({ shouldReset, setShouldReset }) {
       }
     });
 
-    return handleKnightObstacles(newState);
+    return handleKnightObstacles(newState, thisPieceColor);
   };
 
   // const handlePossibleLegalRookMoves = (boardDataParam) => {
@@ -1041,11 +1041,11 @@ function Board({ shouldReset, setShouldReset }) {
           }
         }
       } else if (selectedSquare.piece.includes("rook")) {
-        updatedBoardData = handlePossibleLegalRookMoves(updatedBoardData);
-        updatedBoardData = handleRookObstacles(updatedBoardData);
+        updatedBoardData = handlePossibleLegalRookMoves(updatedBoardData, selectedSquare.coordinates);
+        updatedBoardData = handleRookObstacles(updatedBoardData, selectedSquare.coordinates, thisPieceColor);
       } else if (selectedSquare.piece.includes("bishop")) {
         updatedBoardData = handlePossibleLegalBishopMoves(updatedBoardData, selectedSquare.coordinates);
-        updatedBoardData = handleBishopObstacles(updatedBoardData);
+        updatedBoardData = handleBishopObstacles(updatedBoardData, selectedSquare.coordinates, thisPieceColor);
       } else if (selectedSquare.piece.includes("queen")) {
         updatedBoardData = handlePossibleLegalQueenMoves(updatedBoardData, selectedSquare.coordinates);
         updatedBoardData = handleQueenObstacles(updatedBoardData, selectedSquare.coordinates, thisPieceColor);
